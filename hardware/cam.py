@@ -9,7 +9,7 @@ class PiCameraStreamer:
         self.server_url = server_url
         self.stream = io.BytesIO()
         self.camera = picamera.PiCamera()
-        self.camera.resolution = (640, 480)
+        self.camera.resolution = (1920, 1080)
         self.camera.framerate = 30
         self.is_running = False
 
@@ -33,7 +33,7 @@ class PiCameraStreamer:
                 print(f"Frame sent. Status code: {response.status_code}")
             except requests.RequestException as e:
                 print(f"Error sending frame: {e}")
-            time.sleep(1/30)  # 약 30 FPS로 제한
+            time.sleep(1/60)  # 약 30 FPS로 제한
 
     def start(self):
         self.is_running = True
