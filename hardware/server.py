@@ -62,14 +62,14 @@ def train_video(id):
             img_data = request.data
             nparr = np.frombuffer(img_data, np.uint8)
             global_frame1 = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
-            return redirect('/')
+            return json.dumps({'status': 'OK'})
         
         elif id == '2':
             global global_frame2
             img_data = request.data
             nparr = np.frombuffer(img_data, np.uint8)
             global_frame2 = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
-            return redirect('/')
+            return json.dumps({'status': 'OK'})
         
         else:
             return json.dumps({'error': 'Invalid train ID'}), 400

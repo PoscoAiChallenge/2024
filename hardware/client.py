@@ -28,7 +28,8 @@ streamer = PiCameraStreamer(server_url=URL)
 streamer.start()
 
 while(1):
-    res = requests.get(URL + '/train/1')
+    res = requests.get(URL + 'train/1')
+    print(res.text)
     if res.status_code == 200:
         data = res.json()
         if data['status'] != 'STOP':
