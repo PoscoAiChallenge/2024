@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, Response, render_template
+from flask import Flask, request, jsonify, Response, render_template, redirect
 import cv2
 import numpy as np
 from dotenv import load_dotenv
@@ -28,11 +28,11 @@ def train(id):
         if id == '1':
             global train1_stat
             train1_stat = speed = request.form.get('speed')
-            return jsonify({'status': train1_stat})
+            return redirect('/')
         elif id == '2':
             global train2_stat
             train2_stat = speed = request.form.get('speed')
-            return jsonify({'status': train2_stat})
+            return redirect('/')
         else:
             return json.dumps({'error': 'Invalid train ID'})
 
@@ -62,14 +62,14 @@ def train_video(id):
             img_data = request.data
             nparr = np.frombuffer(img_data, np.uint8)
             global_frame1 = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
-            return jsonify({'status': 'success'})
+            return redirect('/')
         
         elif id == '2':
             global global_frame2
             img_data = request.data
             nparr = np.frombuffer(img_data, np.uint8)
             global_frame2 = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
-            return jsonify({'status': 'success'})
+            return redirect('/')
         
         else:
             return json.dumps({'error': 'Invalid train ID'}), 400
