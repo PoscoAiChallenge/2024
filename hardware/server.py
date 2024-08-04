@@ -80,6 +80,8 @@ def train_video(id):
             else:
                 global_frame2 = frame
             
+            print(request.content_type)
+            print(request.content_length)
             return json.dumps({'status': 'OK'})
         
         except Exception as e:
