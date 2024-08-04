@@ -57,34 +57,59 @@ def generate_frames(frame_source):
 @app.route('/train/video/<id>', methods=['GET','POST'])
 def train_video(id):
     if request.method == 'POST':
-        if id == '1':
-            global global_frame1
-            img_data = request.data
-            nparr = np.frombuffer(img_data, np.uint8)
-            global_frame1 = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
-            return json.dumps({'status': 'OK'})
+        global global_frame1, global_frame2
         
-        elif id == '2':
-            global global_frame2
-            img_data = request.data
-            nparr = np.frombuffer(img_data, np.uint8)
-            global_frame2 = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
-            print(request.data)
-            return json.dumps({'status': 'OK'})
-        
-        else:
+        if id not in ['1', '2']:
             return json.dumps({'error': 'Invalid train ID'}), 400
+        
+        img_data = request.data
+        if not img_data:
+            return json.dumps({'error': 'No image data received'}), 400
+        
+        print(f"Received data length for train {id}: {len(img_data)}")
+        
+        try:
+            nparr = np.frombuffer(img_data, np.uint8)
+            frame = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+            
+            if frame is None:
+                return json.dumps({'error': 'Failed to decode image'}), 400
+            
+            if id == '1':
+                global_frame1 = frame
+            else:
+                global_frame2 = frame
+            
+            return json.dumps({'status': 'OK'})
+        
+        except Exception as e:
+            print(f"Error processing image for train {id}: {str(e)}")
+            return json.dumps({'error': str(e)}), 500
         
     elif request.method == 'GET':
-        if id == '1':
-            return Response(generate_frames(global_frame1), mimetype='multipart/x-mixed-replace; boundary=frame')
-        elif id == '2':
-            return Response(generate_frames(global_frame2), mimetype='multipart/x-mixed-replace; boundary=frame')
-        else:
+        if id not in ['1', '2']:
             return json.dumps({'error': 'Invalid train ID'}), 400
+        
+        frame = global_frame1 if id == '1' else global_frame2
+        
+        if frame is None:
+            return json.dumps({'error': 'No frame available'}), 404
+        
+        return Response(generate_frames(frame), 
+                        mimetype='multipart/x-mixed-replace; boundary=frame')
 
     else:
         return json.dumps({'error': 'Invalid request method'}), 405
+
+def generate_frames(frame):
+    while True:
+        if frame is None:
+            continue
+        ret, buffer = cv2.imencode('.jpg', frame)
+        if not ret:
+            continue
+        yield (b'--frame\r\n'
+               b'Content-Type: image/jpeg\r\n\r\n' + buffer.tobytes() + b'\r\n')
     
 # Run the app
 if __name__ == '__main__':
