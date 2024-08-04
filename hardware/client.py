@@ -18,7 +18,7 @@ GPIO.setup(BUZZER_PIN, GPIO.OUT)
 GPIO.setup(MOTOR_PIN, GPIO.OUT)
 
 # Set up PWM
-pwm = GPIO.PWM(BUZZER_PIN, 1000)  # 1000 Hz frequency
+pwm = GPIO.PWM(MOTOR_PIN, 1000)  # 1000 Hz frequency
 pwm.start(0)  # Start with 0% duty cycle
 
 # Create a camera streamer
@@ -43,6 +43,7 @@ while(1):
             pwm.ChangeDutyCycle(50)
         elif data['status'] == 'STOP':
             GPIO.output(MOTOR_PIN, GPIO.LOW)
+            GPIO.output(BUZZER_PIN, GPIO.HIGH)
             pwm.ChangeDutyCycle(0)
         else:
             print('Invalid status')

@@ -1,6 +1,6 @@
 import io
 import time
-import picamera
+import picamera2
 import requests
 from threading import Thread
 
@@ -8,8 +8,8 @@ class PiCameraStreamer:
     def __init__(self, server_url):
         self.server_url = server_url
         self.stream = io.BytesIO()
-        self.camera = picamera.PiCamera()
-        self.camera.resolution = (1920, 1080)
+        self.camera = picamera2.PiCamera()
+        self.camera.resolution = (600, 600)
         self.camera.framerate = 60
         self.is_running = False
 
