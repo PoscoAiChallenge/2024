@@ -58,6 +58,10 @@ def generate_frames(frame_source):
 def train_video(id):
     if request.method == 'POST':
         global global_frame1, global_frame2
+
+        print("1231231231")
+        print(request.content_type)
+        print(request.content_length)
         
         if id not in ['1', '2']:
             return json.dumps({'error': 'Invalid train ID'}), 400
@@ -80,9 +84,7 @@ def train_video(id):
             else:
                 global_frame2 = frame
             
-            print("1231231231")
-            print(request.content_type)
-            print(request.content_length)
+            
             return json.dumps({'status': 'OK'})
         
         except Exception as e:
