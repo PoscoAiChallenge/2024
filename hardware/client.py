@@ -22,7 +22,7 @@ pwm = GPIO.PWM(MOTOR_PIN, 1000)  # 1000 Hz frequency
 pwm.start(0)  # Start with 0% duty cycle
 
 # Create a camera streamer
-streamer = PiCameraStreamer(server_url=URL)
+streamer = PiCameraStreamer(server_url=URL+"train/video/1")
 
 # Start the camera streamer
 streamer.start()
