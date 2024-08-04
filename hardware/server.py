@@ -27,11 +27,11 @@ def train(id):
     if request.method == 'POST':
         if id == '1':
             global train1_stat
-            train1_stat = request.json['status']
+            train1_stat = speed = request.form.get('speed')
             return jsonify({'status': train1_stat})
         elif id == '2':
             global train2_stat
-            train2_stat = request.json['status']
+            train2_stat = speed = request.form.get('speed')
             return jsonify({'status': train2_stat})
         else:
             return json.dumps({'error': 'Invalid train ID'})
