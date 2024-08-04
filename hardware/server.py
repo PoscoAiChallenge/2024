@@ -69,6 +69,7 @@ def train_video(id):
             img_data = request.data
             nparr = np.frombuffer(img_data, np.uint8)
             global_frame2 = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+            print(request.data)
             return json.dumps({'status': 'OK'})
         
         else:
