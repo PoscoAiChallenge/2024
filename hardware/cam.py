@@ -28,6 +28,7 @@ class PiCameraStreamer:
         while self.is_running:
             success, frame = self.camera.read()
             if not success:
+                print("Failed to read frame")
                 break
             else:
                 ret, buffer = cv2.imencode('.jpg', frame)
