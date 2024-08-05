@@ -48,21 +48,19 @@ def train(id):
     
 def generate_frames(frame_source):
     while True:
-        if frame_source is not None:
-            ret, buffer = cv2.imencode('.jpg', frame_source)
-            frame = buffer.tobytes()
-            yield (b'--frame\r\n'
-                   b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+        if frame_source is None:
+            continue
+        ret, buffer = cv2.imencode('.jpg', frame_source)
+        if not ret:
+            continue
+        yield (b'--frame\r\n'
+               b'Content-Type: image/jpeg\r\n\r\n' + buffer.tobytes() + b'\r\n')
 
-@app.route('/train/video/<id>', methods=['GET','POST'])
+@app.route('/train/video/<id>', methods=['GET', 'POST'])
 def train_video(id):
+    global global_frame1, global_frame2
+    
     if request.method == 'POST':
-        global global_frame1, global_frame2
-
-        print("1231231231")
-        print(request.content_type)
-        print(request.content_length)
-        
         if id not in ['1', '2']:
             return json.dumps({'error': 'Invalid train ID'}), 400
         
@@ -84,7 +82,6 @@ def train_video(id):
             else:
                 global_frame2 = frame
             
-            
             return json.dumps({'status': 'OK'})
         
         except Exception as e:
@@ -95,26 +92,13 @@ def train_video(id):
         if id not in ['1', '2']:
             return json.dumps({'error': 'Invalid train ID'}), 400
         
-        frame = global_frame1 if id == '1' else global_frame2
+        frame_source = global_frame1 if id == '1' else global_frame2
         
-        if frame is None:
-            return json.dumps({'error': 'No frame available'}), 404
-        
-        return Response(generate_frames(frame), 
+        return Response(generate_frames(frame_source),
                         mimetype='multipart/x-mixed-replace; boundary=frame')
 
     else:
         return json.dumps({'error': 'Invalid request method'}), 405
-
-def generate_frames(frame):
-    while True:
-        if frame is None:
-            continue
-        ret, buffer = cv2.imencode('.jpg', frame)
-        if not ret:
-            continue
-        yield (b'--frame\r\n'
-               b'Content-Type: image/jpeg\r\n\r\n' + buffer.tobytes() + b'\r\n')
     
 # Run the app
 if __name__ == '__main__':
