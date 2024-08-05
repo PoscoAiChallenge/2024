@@ -11,18 +11,16 @@ class PiCameraStreamer:
         self.server_url = server_url
         self.stream = io.BytesIO()
         self.camera = Picamera2()
-        self.camera.configure(self.camera.create_still_configuration(main={"size": (600, 600)}))
-        self.encoder = JpegEncoder()
-        self.output = FileOutput(self.stream)
+        self.still_config = self.camera.create_still_configuration(main={"size": (600, 600)})
+        self.camera.configure(self.still_config)
         self.is_running = False
 
     def capture_frames(self):
         self.camera.start()
-        request_config = self.camera.create_jpeg_configuration()  # JPEG 설정 생성
         while self.is_running:
             self.stream.seek(0)
             self.stream.truncate()
-            self.camera.capture_file(self.output, wait=True, request=request_config)  # 설정 적용
+            self.camera.capture_file(self.stream, format='jpeg')
             yield self.stream.getvalue()
 
     def send_frames(self):
@@ -46,13 +44,3 @@ class PiCameraStreamer:
         self.is_running = False
         self.camera.stop()
         self.camera.close()
-
-if __name__ == "__main__":
-    streamer = PiCameraStreamer("http://your-server-url/endpoint")
-    try:
-        streamer.start()
-        while True:
-            time.sleep(1)
-    except KeyboardInterrupt:
-        print("Stopping streamer...")
-        streamer.stop()
