@@ -3,6 +3,7 @@ import cv2
 import numpy as np
 from dotenv import load_dotenv
 import json
+import threading
 
 # Load environment variables
 load_dotenv()
@@ -15,6 +16,7 @@ global_frame2 = None
 
 # Create a Flask app
 app = Flask(__name__)
+lock = threading.Lock()
 
 # Define a route for the root URL
 @app.route('/')
@@ -47,14 +49,26 @@ def train(id):
         return json.dumps({'error': 'Invalid request method'}), 405
     
 def generate_frames(frame_source):
+    global global_frame1, global_frame2
     while True:
-        if frame_source is None:
-            continue
-        ret, buffer = cv2.imencode('.jpg', frame_source)
-        if not ret:
-            continue
-        yield (b'--frame\r\n'
-               b'Content-Type: image/jpeg\r\n\r\n' + buffer.tobytes() + b'\r\n')
+        with lock:
+            if frame_source == 1:
+                frame = global_frame1
+            else:
+                frame = global_frame2
+        
+        if frame is not None:
+            ret, buffer = cv2.imencode('.jpg', frame)
+            if ret:
+                yield (b'--frame\r\n'
+                       b'Content-Type: image/jpeg\r\n\r\n' + buffer.tobytes() + b'\r\n')
+        else:
+            # If no frame is available, send a blank frame
+            blank_frame = np.zeros((600, 600, 3), np.uint8)
+            ret, buffer = cv2.imencode('.jpg', blank_frame)
+            if ret:
+                yield (b'--frame\r\n'
+                       b'Content-Type: image/jpeg\r\n\r\n' + buffer.tobytes() + b'\r\n')
 
 @app.route('/train/video/<id>', methods=['GET', 'POST'])
 def train_video(id):
@@ -77,10 +91,11 @@ def train_video(id):
             if frame is None:
                 return json.dumps({'error': 'Failed to decode image'}), 400
             
-            if id == '1':
-                global_frame1 = frame
-            else:
-                global_frame2 = frame
+            with lock:
+                if id == '1':
+                    global_frame1 = frame
+                else:
+                    global_frame2 = frame
             
             return json.dumps({'status': 'OK'})
         
@@ -92,7 +107,7 @@ def train_video(id):
         if id not in ['1', '2']:
             return json.dumps({'error': 'Invalid train ID'}), 400
         
-        frame_source = global_frame1 if id == '1' else global_frame2
+        frame_source = 1 if id == '1' else 2
         
         return Response(generate_frames(frame_source),
                         mimetype='multipart/x-mixed-replace; boundary=frame')
