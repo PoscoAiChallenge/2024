@@ -21,39 +21,47 @@ GPIO.setup(MOTOR_PIN, GPIO.OUT)
 pwm = GPIO.PWM(MOTOR_PIN, 1000)  # 1000 Hz frequency
 pwm.start(0)  # Start with 0% duty cycle
 
-# Create a camera streamer
+# Create and start a camera streamer
 streamer = PiCameraStreamer()
 print('Camera streamer created')
-# Start the camera streamer
 streamer.start()
 print('Camera streamer started')
 
-while(1):
-    res = requests.get(URL + 'train/1')
-    if res.status_code == 200:
-        data = res.json()
-        if data['status'] != 'STOP':
-            speed = int(data['status'])
+try:
+    while True:
+        try:
+            res = requests.get(URL + 'train/1')
+            if res.status_code == 200:
+                data = res.json()
+                if data['status'] != 'STOP':
+                    speed = int(data['status'])
 
-            if speed < 0:
-                speed = 0
-            elif speed > 100:
-                speed = 100
+                    speed = max(0, min(speed, 100))  # Clamp speed between 0 and 100
 
-            GPIO.output(MOTOR_PIN, GPIO.HIGH)
-            pwm.ChangeDutyCycle(50)
-        elif data['status'] == 'STOP':
+                    GPIO.output(MOTOR_PIN, GPIO.HIGH)
+                    pwm.ChangeDutyCycle(speed)
+                elif data['status'] == 'STOP':
+                    GPIO.output(MOTOR_PIN, GPIO.LOW)
+                    GPIO.output(BUZZER_PIN, GPIO.HIGH)
+                    pwm.ChangeDutyCycle(0)
+                else:
+                    print('Invalid status')
+
+            else:
+                print('Error getting train status')
+                GPIO.output(MOTOR_PIN, GPIO.LOW)
+                pwm.ChangeDutyCycle(0)
+        
+        except requests.RequestException as e:
+            print(f'Request error: {e}')
             GPIO.output(MOTOR_PIN, GPIO.LOW)
-            GPIO.output(BUZZER_PIN, GPIO.HIGH)
             pwm.ChangeDutyCycle(0)
-        else:
-            print('Invalid status')
+        
+        time.sleep(0.05)
 
-    else:
-        print('Error getting train status')
-        GPIO.output(MOTOR_PIN, GPIO.LOW)
-        pwm.ChangeDutyCycle(0)
-        streamer.stop()
-    
-    time.sleep(0.05)
-
+except KeyboardInterrupt:
+    print("Stopping...")
+finally:
+    streamer.stop()
+    GPIO.cleanup()
+    print("Cleanup done")
