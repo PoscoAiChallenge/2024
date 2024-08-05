@@ -15,8 +15,9 @@ class PiCameraStreamer:
     def capture_and_send_frames(self):
         self.camera.start()
         while self.is_running:
-            stream = io.BytesIO()
-            self.camera.capture_file(stream, format='jpeg')
+            frame = self.camera.capture_array()
+            ret, buffer = cv2.imencode('.jpg', frame)
+            frame = buffer.tobytes()
             try:
                 response = requests.post(
                     self.server_url, 
