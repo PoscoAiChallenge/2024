@@ -10,26 +10,53 @@ app = Flask(__name__)
 
 class PiCameraStreamer:
     def __init__(self):
-        self.camera = Picamera2()
-        self.camera.configure(self.camera.create_preview_configuration(main={"format": 'XRGB8888', "size": (640, 480)}))
+        self.camera = None
         self.is_running = False
+        self.init_camera()
+
+    def init_camera(self, max_retries=3):
+        for attempt in range(max_retries):
+            try:
+                self.camera = Picamera2()
+                self.camera.configure(self.camera.create_preview_configuration(main={"format": 'XRGB8888', "size": (640, 480)}))
+                print(f"Camera initialized successfully on attempt {attempt + 1}")
+                return
+            except Exception as e:
+                print(f"Failed to initialize camera on attempt {attempt + 1}: {e}")
+                if self.camera:
+                    self.camera.close()
+                time.sleep(2)  # Wait before retrying
+        
+        raise RuntimeError("Failed to initialize camera after multiple attempts")
 
     def start(self):
+        if not self.camera:
+            raise RuntimeError("Camera not initialized")
         self.camera.start()
         self.is_running = True
         Thread(target=self.run_flask).start()
 
     def stop(self):
         self.is_running = False
-        self.camera.stop()
+        if self.camera:
+            self.camera.stop()
+            self.camera.close()
 
     def generate_frames(self):
         while self.is_running:
-            frame = self.camera.capture_array()
-            ret, buffer = cv2.imencode('.jpg', frame)
-            frame = buffer.tobytes()
-            yield (b'--frame\r\n'
-                   b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+            if not self.camera:
+                yield (b'--frame\r\n'
+                       b'Content-Type: image/jpeg\r\n\r\n' + b'\r\n')
+                continue
+            try:
+                frame = self.camera.capture_array()
+                ret, buffer = cv2.imencode('.jpg', frame)
+                frame = buffer.tobytes()
+                yield (b'--frame\r\n'
+                       b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+            except Exception as e:
+                print(f"Error capturing frame: {e}")
+                time.sleep(0.1)
 
     def run_flask(self):
         app.run(host='0.0.0.0', port=5000, threaded=True)
