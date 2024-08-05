@@ -18,6 +18,7 @@ class PiCameraStreamer:
 
     def capture_frames(self):
         self.camera.start()
+        self.camera.start_encoder(self.encoder, self.output)
         while self.is_running:
             self.stream.seek(0)
             self.stream.truncate()
@@ -35,7 +36,7 @@ class PiCameraStreamer:
                 print(f"Frame sent. Status code: {response.status_code}")
             except requests.RequestException as e:
                 print(f"Error sending frame: {e}")
-            time.sleep(1/30)  # 약 60 FPS로 제한
+            time.sleep(1/30)  # 약 30 FPS로 제한
 
     def start(self):
         self.is_running = True
@@ -43,5 +44,17 @@ class PiCameraStreamer:
 
     def stop(self):
         self.is_running = False
+        self.camera.stop_encoder()
         self.camera.stop()
         self.camera.close()
+
+if __name__ == "__main__":
+    streamer = PiCameraStreamer("http://your-server-url/endpoint")
+    try:
+        streamer.start()
+        # 메인 스레드가 종료되지 않도록 대기
+        while True:
+            time.sleep(1)
+    except KeyboardInterrupt:
+        print("Stopping streamer...")
+        streamer.stop()
