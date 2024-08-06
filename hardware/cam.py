@@ -11,6 +11,9 @@ class PiCameraStreamer:
 
     def init_camera(self):
         self.camera = cv2.VideoCapture(0)
+        self.camera.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
+        self.camera.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
+
         if not self.camera.isOpened():
             raise RuntimeError("Failed to open camera")
 
