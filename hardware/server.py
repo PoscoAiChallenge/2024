@@ -23,10 +23,13 @@ def train(id):
         if id == '1':
             global train1_stat
             train1_stat = speed = request.form.get('speed')
+            return 'OK'
 
         elif id == '2':
             global train2_stat
             train2_stat = speed = request.form.get('speed')
+            return 'OK'
+
         else:
             return json.dumps({'error': 'Invalid train ID'})
 
