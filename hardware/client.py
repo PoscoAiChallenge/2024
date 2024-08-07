@@ -3,7 +3,8 @@ import requests
 import time
 import RPi.GPIO as GPIO
 from dotenv import load_dotenv
-from cam import PiCameraStreamer
+import subprocess
+import signal
 
 # Load environment variables
 load_dotenv()
@@ -21,11 +22,7 @@ GPIO.setup(MOTOR_PIN, GPIO.OUT)
 pwm = GPIO.PWM(MOTOR_PIN, 1000)  # 1000 Hz frequency
 pwm.start(0)  # Start with 0% duty cycle
 
-# Create and start a camera streamer
-streamer = PiCameraStreamer()
-print('Camera streamer created')
-streamer.start()
-print('Camera streamer started')
+process = subprocess.Popen(['python3', 'cam.py'])
 
 try:
     while True:
@@ -60,8 +57,9 @@ try:
         time.sleep(0.05)
 
 except KeyboardInterrupt:
+    process.send_signal(signal.SIGINT)
+    process.wait()
     print("Stopping...")
 finally:
-    streamer.stop()
     GPIO.cleanup()
     print("Cleanup done")

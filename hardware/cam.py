@@ -1,52 +1,24 @@
-import cv2
 from flask import Flask, Response
-from threading import Thread
+from picamera2 import Picamera2
+import cv2
 
 app = Flask(__name__)
 
-class PiCameraStreamer:
-    def __init__(self):
-        self.camera = None
-        self.is_running = False
+camera = Picamera2()
+camera.configure(camera.create_preview_configuration(main={"format": 'XRGB8888', "size": (640, 480)}))
+camera.start()
 
-    def init_camera(self):
-        self.camera = cv2.VideoCapture(0)
-        self.camera.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
-        self.camera.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
-
-        if not self.camera.isOpened():
-            raise RuntimeError("Failed to open camera")
-
-    def start(self):
-        self.init_camera()
-        self.is_running = True
-        Thread(target=self.run_flask).start()
-
-    def stop(self):
-        self.is_running = False
-        if self.camera:
-            self.camera.release()
-
-    def generate_frames(self):
-        while self.is_running:
-            success, frame = self.camera.read()
-            if not success:
-                print("Failed to read frame")
-                break
-            else:
-                ret, buffer = cv2.imencode('.jpg', frame)
-                frame = buffer.tobytes()
-                yield (b'--frame\r\n'
-                       b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
-
-    def run_flask(self):
-        app.run(host='0.0.0.0', port=5000, threaded=True)
+def generate_frames():
+    while True:
+        frame = camera.capture_array()
+        ret, buffer = cv2.imencode('.jpg', frame)
+        frame = buffer.tobytes()
+        yield (b'--frame\r\n'
+               b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
 
 @app.route('/')
 def video_feed():
-    return Response(streamer.generate_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
-
-streamer = PiCameraStreamer()
+    return Response(generate_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 if __name__ == '__main__':
-    streamer.start()
+    app.run(host='0.0.0.0', port=5000)
