@@ -14,7 +14,7 @@ app = Flask(__name__)
 # Define a route for the root URL
 @app.route('/')
 def index():
-    return render_template('index.html', train1_stat=train1_stat, train2_stat=train2_stat)
+    return render_template('index.html', train1=train1_stat, train2=train2_stat)
 
 # Define a route for the /predict URL
 @app.route('/train/<id>', methods=['GET', 'POST'])
