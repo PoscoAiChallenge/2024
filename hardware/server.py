@@ -20,15 +20,20 @@ def index():
 @app.route('/train/<id>', methods=['GET', 'POST'])
 def train(id):
     if request.method == 'POST':
+        speed = request.form.get('speed')
+
+        if speed is None:
+            speed = request.json.get('speed')
+
         if id == '1':
             global train1_stat
-            train1_stat = speed = request.form.get('speed')
+            train1_stat = speed
             print(train1_stat)
             return 'OK'
 
         elif id == '2':
             global train2_stat
-            train2_stat = speed = request.form.get('speed')
+            train2_stat = speed
             print(train2_stat)
             return 'OK'
 
