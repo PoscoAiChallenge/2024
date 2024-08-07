@@ -17,7 +17,7 @@ app = Flask(__name__)
 # Define a route for the root URL
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('index.html', train1_stat=train1_stat, train2_stat=train2_stat)
 
 # Define a route for the /predict URL
 @app.route('/train/<id>', methods=['GET', 'POST'])
@@ -26,11 +26,11 @@ def train(id):
         if id == '1':
             global train1_stat
             train1_stat = speed = request.form.get('speed')
-            return redirect('/')
+            return 'OK'
         elif id == '2':
             global train2_stat
             train2_stat = speed = request.form.get('speed')
-            return redirect('/')
+            return 'OK'
         else:
             return json.dumps({'error': 'Invalid train ID'})
 

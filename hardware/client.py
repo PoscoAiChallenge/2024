@@ -30,14 +30,14 @@ try:
             res = requests.get(URL + 'train/1')
             if res.status_code == 200:
                 data = res.json()
-                if data['status'] != 'STOP':
-                    speed = int(data['status'])
+                speed = int(data['status'])
+                if speed != 0:
 
                     speed = max(0, min(speed, 100))  # Clamp speed between 0 and 100
 
                     GPIO.output(MOTOR_PIN, GPIO.HIGH)
                     pwm.ChangeDutyCycle(speed)
-                elif data['status'] == 'STOP':
+                elif speed == 0:
                     GPIO.output(MOTOR_PIN, GPIO.LOW)
                     GPIO.output(BUZZER_PIN, GPIO.HIGH)
                     pwm.ChangeDutyCycle(0)
