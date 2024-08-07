@@ -23,11 +23,13 @@ def train(id):
         if id == '1':
             global train1_stat
             train1_stat = speed = request.form.get('speed')
+            print(train1_stat)
             return 'OK'
 
         elif id == '2':
             global train2_stat
             train2_stat = speed = request.form.get('speed')
+            print(train2_stat)
             return 'OK'
 
         else:
