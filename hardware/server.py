@@ -5,8 +5,8 @@ import json
 # Load environment variables
 load_dotenv()
 
-train1_stat = 'STOP'
-train2_stat = 'STOP'
+train1_stat = 0
+train2_stat = 0
 
 # Create a Flask app
 app = Flask(__name__)
