@@ -2,6 +2,12 @@ from picamera2 import Picamera2
 import requests
 import cv2
 from time import sleep
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
+URL = os.getenv('URL')
 
 def main():
     camera = Picamera2()
@@ -15,7 +21,7 @@ def main():
             frame = buffer.tobytes()
             
             try:
-                res = requests.post('http://192.168.124.101:5000/post_frame', 
+                res = requests.post(URL+'/post_frame', 
                                     files={'frame': frame})
                 if res.status_code != 200:
                     print(f'Error sending frame: HTTP {res.status_code}')
