@@ -7,7 +7,7 @@ import os
 
 load_dotenv()
 
-URL = os.getenv('URL')
+URL = os.getenv('URL')+'/post_frame'
 
 def main():
     camera = Picamera2()
@@ -21,7 +21,7 @@ def main():
             frame = buffer.tobytes()
             
             try:
-                res = requests.post(URL+'/post_frame', 
+                res = requests.post(URL, 
                                     files={'frame': frame})
                 if res.status_code != 200:
                     print(f'Error sending frame: HTTP {res.status_code}')
