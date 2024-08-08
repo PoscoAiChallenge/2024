@@ -1,50 +1,36 @@
 from picamera2 import Picamera2
+import requests
 import cv2
-import asyncio
-import aiohttp
-import time
+from time import sleep
 
-async def send_frame(session, url, frame):
-    try:
-        async with session.post(url, data={'frame': frame}) as response:
-            if response.status != 200:
-                print(f'Error sending frame: HTTP {response.status}')
-    except aiohttp.ClientError as e:
-        print(f'Error sending frame: {e}')
-
-async def main():
+def main():
     camera = Picamera2()
     camera.configure(camera.create_preview_configuration(main={"format": 'XRGB8888', "size": (640, 480)}))
     camera.start()
 
-    url = 'http://192.168.124.101:5000/post_frame'
-    
-    async with aiohttp.ClientSession() as session:
-        frame_count = 0
-        start_time = time.time()
-        
+    try:
         while True:
             frame = camera.capture_array()
             ret, buffer = cv2.imencode('.jpg', frame)
-            frame_data = buffer.tobytes()
+            frame = buffer.tobytes()
             
-            # 비동기로 프레임 전송
-            asyncio.create_task(send_frame(session, url, frame_data))
+            try:
+                res = requests.post('http://192.168.124.101:5000/post_frame', 
+                                    files={'frame': frame})
+                if res.status_code != 200:
+                    print(f'Error sending frame: HTTP {res.status_code}')
+                    # 여기서 break하지 않고 계속 진행
+            except requests.RequestException as e:
+                print(f'Error sending frame: {e}')
+                # 네트워크 오류 발생 시 잠시 대기 후 재시도
+                sleep(1)
             
-            frame_count += 1
-            elapsed_time = time.time() - start_time
-            
-            # 매 초마다 FPS 출력
-            if elapsed_time >= 1:
-                fps = frame_count / elapsed_time
-                print(f"FPS: {fps:.2f}")
-                frame_count = 0
-                start_time = time.time()
-
-            # 약간의 대기 시간을 줘서 CPU 사용량을 줄입니다
-            await asyncio.sleep(0.001)
-
-    camera.stop()
+    
+    except KeyboardInterrupt:
+        print("Stopping...")
+    finally:
+        camera.stop()
+        print("Camera stopped")
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    main()
