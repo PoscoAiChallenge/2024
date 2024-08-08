@@ -14,3 +14,5 @@ def generate_frames():
         yield (b'--frame\r\n'
                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
         requests.post('http://192.168.124.101:5000/post_frame', files={'frame': frame}, timeout=0.1)
+
+generate_frames()
