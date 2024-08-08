@@ -1,8 +1,6 @@
-from flask import Flask, Response
 from picamera2 import Picamera2
+import requests
 import cv2
-
-app = Flask(__name__)
 
 camera = Picamera2()
 camera.configure(camera.create_preview_configuration(main={"format": 'XRGB8888', "size": (640, 480)}))
@@ -15,11 +13,4 @@ def generate_frames():
         frame = buffer.tobytes()
         yield (b'--frame\r\n'
                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
-
-@app.route('/')
-def video_feed():
-    return Response(generate_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
-
-if __name__ == '__main__':
-    print('Starting camera server...')
-    app.run(host='0.0.0.0', port=5000)
+        requests.post('http://192.168.124.101:5000/post_frame', files={'frame': frame}, timeout=0.1)
