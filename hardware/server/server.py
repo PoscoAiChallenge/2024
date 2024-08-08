@@ -9,6 +9,8 @@ load_dotenv()
 train1_stat = 0
 train2_stat = 0
 
+frame_queue = queue.Queue(maxsize=30)  # 최근 30개의 프레임만 유지
+
 # Create a Flask app
 app = Flask(__name__)
 
@@ -30,13 +32,13 @@ def train(id):
             global train1_stat
             train1_stat = speed
             print(train1_stat)
-            return 'OK'
+            return redirect('/')
 
         elif id == '2':
             global train2_stat
             train2_stat = speed
             print(train2_stat)
-            return 'OK'
+            return redirect('/')
 
         else:
             return json.dumps({'error': 'Invalid train ID'})
@@ -51,7 +53,6 @@ def train(id):
     else:
         return json.dumps({'error': 'Invalid request method'}), 405
     
-frame_queue = queue.Queue(maxsize=30)  # 최근 30개의 프레임만 유지
 
 @app.route('/post_frame', methods=['POST'])
 def post_frame():
