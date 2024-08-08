@@ -53,29 +53,6 @@ def train(id):
     else:
         return json.dumps({'error': 'Invalid request method'}), 405
     
-
-@app.route('/post_frame', methods=['POST'])
-def post_frame():
-    if 'frame' in request.files:
-        frame = request.files['frame'].read()
-        if frame_queue.full():
-            frame_queue.get()  # 가장 오래된 프레임 제거
-        frame_queue.put(frame)
-        return "Frame received", 200
-    return "No frame in request", 400
-
-def gen_frames():
-    while True:
-        if not frame_queue.empty():
-            frame = frame_queue.get()
-            yield (b'--frame\r\n'
-                   b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
-
-@app.route('/stream')
-def stream():
-    return Response(gen_frames(),
-                    mimetype='multipart/x-mixed-replace; boundary=frame')
-    
 # Run the app
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
