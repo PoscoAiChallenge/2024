@@ -1,5 +1,4 @@
 from flask import Flask, request, jsonify, Response, render_template, redirect
-from dotenv import load_dotenv
 import socket
 import json
 import time
