@@ -70,9 +70,10 @@ def index():
 def train(id):
     global train1_stat, train2_stat
     if request.method == 'POST':
-        speed = request.json.get('speed')
+        speed = request.form.get('speed')
         if speed is None:
-            speed = request.form.get('speed')
+            speed = request.json.get('speed')
+            
         
         if id == '1':
             train1_stat = speed
