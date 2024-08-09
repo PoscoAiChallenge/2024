@@ -1,42 +1,25 @@
+from flask import Flask, Response
 from picamera2 import Picamera2
-import requests
 import cv2
-from time import sleep
-from dotenv import load_dotenv
-import os
 
-load_dotenv()
+app = Flask(__name__)
 
-URL = os.getenv('URL')+'/post_frame'
+camera = Picamera2()
+camera.configure(camera.create_preview_configuration(main={"format": 'XRGB8888', "size": (640, 480)}))
+camera.start()
 
-def main():
-    camera = Picamera2()
-    camera.configure(camera.create_preview_configuration(main={"format": 'XRGB8888', "size": (640, 480)}))
-    camera.start()
+def generate_frames():
+    while True:
+        frame = camera.capture_array()
+        ret, buffer = cv2.imencode('.jpg', frame)
+        frame = buffer.tobytes()
+        yield (b'--frame\r\n'
+               b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
 
-    try:
-        while True:
-            frame = camera.capture_array()
-            ret, buffer = cv2.imencode('.jpg', frame)
-            frame = buffer.tobytes()
-            
-            try:
-                res = requests.post(URL, 
-                                    files={'frame': frame})
-                if res.status_code != 200:
-                    print(f'Error sending frame: HTTP {res.status_code}')
-                    # 여기서 break하지 않고 계속 진행
-            except requests.RequestException as e:
-                print(f'Error sending frame: {e}')
-                # 네트워크 오류 발생 시 잠시 대기 후 재시도
-                sleep(1)
-            
-    
-    except KeyboardInterrupt:
-        print("Stopping...")
-    finally:
-        camera.stop()
-        print("Camera stopped")
+@app.route('/')
+def video_feed():
+    return Response(generate_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
-if __name__ == "__main__":
-    main()
+if __name__ == '__main__':
+    print('Starting camera server...')
+    app.run(host='0.0.0.0', port=5000)
