@@ -6,9 +6,6 @@ import time
 import threading
 import base64
 
-# Load environment variables
-load_dotenv()
-
 # train status
 train1_stat = 0
 train2_stat = 0
