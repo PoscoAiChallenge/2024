@@ -106,7 +106,7 @@ def image(id):
         image = request.json.get('image')
         if image is None:
             return jsonify({'error': 'Invalid image data'}), 400
-        image_data = base64.b64decode(image).decode('utf-8')
+        image_data = base64.b64decode(image)
         #print(f"Received image data for train {id}")
         #print(image_data)
 

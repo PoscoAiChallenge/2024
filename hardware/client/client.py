@@ -27,7 +27,7 @@ while True:
 
         frame = camera.capture_array()
         ret, buffer = cv2.imencode('.jpg', frame)
-        frame = buffer.tobytes()
+        frame = buffer
         image = base64.b64encode(frame).decode('utf-8')
         
         requests.post(URL + '/image/'+ NUM_TRAIN, json={'image': image})
