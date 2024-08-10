@@ -21,7 +21,8 @@ while True:
         if res.status_code == 200:
             data = res.json()
             speed = int(data['status'])
-            
+            print(f'Speed: {speed}')
+
         if speed != 0:
             speed = max(0, min(speed, 100))  # Clamp speed between 0 and 100
             motor.on()
