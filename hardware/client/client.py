@@ -3,7 +3,7 @@ import requests
 import cv2
 from gpiozero import PWMLED, LED
 from dotenv import load_dotenv
-from picamera2 import PiCamera2
+from picamera2 import Picamera2
 import base64
 
 # Load environment variables
@@ -18,7 +18,7 @@ motor = LED(18)
 buzzer = LED(4)
 
 camera = Picamera2()
-camera.configure(camera.create_preview_configuration(main={"format": 'XRGB8888', "size": (400, 400)}))
+camera.configure(camera.create_preview_configuration(main={"format": 'XRGB8888', "size": (300, 300)}))
 camera.start()
 
 while True:
