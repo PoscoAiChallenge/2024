@@ -8,15 +8,15 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Set up GPIO
-URL = os.getenv('URL')
-NUM_TRAIN = os.getenv('TRAIN')
+URL = str(os.getenv('URL'))
+NUM_TRAIN = str(os.getenv('TRAIN'))
 
 # set up GPIO
 motor = LED(17)
 
 while True:
     try:
-        res = requests.get(URL + 'speed/' + NUM_TRAIN)
+        res = requests.get(URL + '/speed/' + NUM_TRAIN)
 
         if res.status_code == 200:
             data = res.json()
