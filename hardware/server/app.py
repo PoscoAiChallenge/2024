@@ -21,7 +21,7 @@ app = Flask(__name__)
 
 # Socket configuration
 SOCKET_HOST = ''  # Listen on all available interfaces
-SOCKET_PORT = 9001
+SOCKET_PORT = 9000
 BUFFER_SIZE = 65536  # Adjust this based on your expected data size
 
 def socket_listener():
