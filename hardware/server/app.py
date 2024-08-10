@@ -115,7 +115,7 @@ def log():
         log_data.append(data)
         return jsonify({'status': 'success'})
     elif request.method == 'GET':
-        return render_template('log.html', log=log_data)
+        return render_template('log.html', logs=log_data)
     else:
         return jsonify({'error': 'Invalid request method'}), 405
 
