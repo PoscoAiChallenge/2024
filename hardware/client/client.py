@@ -23,7 +23,7 @@ camera.start()
 
 while True:
     try:
-        res = requests.get(URL + 'speed/' + NUM_TRAIN)
+        res = requests.get(URL + '/speed/' + NUM_TRAIN)
 
         frame = camera.capture_array()
         ret, buffer = cv2.imencode('.jpg', frame)
