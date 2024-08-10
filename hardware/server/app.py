@@ -26,7 +26,7 @@ BUFFER_SIZE = 65536  # Adjust this based on your expected data size
 
 def socket_listener():
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    sock.bind((SOCKET_HOST, SOCKET_PORT))
+    sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     print(f"Socket listening on port {SOCKET_PORT}")
 
     while True:
