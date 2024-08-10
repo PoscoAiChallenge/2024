@@ -26,6 +26,7 @@ while True:
         if speed != 0:
             speed = max(0, min(speed, 100))  # Clamp speed between 0 and 100
             motor.on()
+            print('Motor on')
             requests.post(URL + '/log', json={'speed': speed, 'train': NUM_TRAIN})
         else:
             motor.off()
