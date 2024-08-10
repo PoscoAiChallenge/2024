@@ -23,6 +23,7 @@ camera.start()
 
 while True:
     try:
+        speed = 0
         res = requests.get(URL + '/speed/' + NUM_TRAIN)
 
         frame = camera.capture_array()
