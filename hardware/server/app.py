@@ -32,6 +32,8 @@ def socket_listener():
     while True:
         try:
             data, addr = sock.recvfrom(BUFFER_SIZE)
+            print(f"Received data from {addr}")
+            print(data)
             # Decode the received data
             json_data = json.loads(data.decode('utf-8'))
             
@@ -77,10 +79,8 @@ def train(id):
         
         if id == '1':
             train1_stat = speed
-            print(train1_stat)
         elif id == '2':
             train2_stat = speed
-            print(train2_stat)
         else:
             return jsonify({'error': 'Invalid train ID'}), 400
         return redirect('/')
