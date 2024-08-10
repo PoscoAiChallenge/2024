@@ -99,17 +99,17 @@ def train(id):
 @app.route('/image/<id>', methods=['GET', 'POST'])
 def image(id):
     if request.method == 'POST':
-        image = request.json.get('base64_data')
+        image = request.json.get('image')
         if image is None:
             return jsonify({'error': 'Invalid image data'}), 400
-        
-        image_id = request.json.get('train_id')
         image_data = base64.b64decode(image)
+        print(f"Received image data for train {id}")
+        print(image_data)
 
-        if image_id == 1:
+        if id == 1:
             global train1_image
             train1_image = image_data
-        elif image_id == 2:
+        elif id == 2:
             global train2_image
             train2_image = image_data
         else:
