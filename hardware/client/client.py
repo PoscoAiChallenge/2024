@@ -4,8 +4,6 @@ import cv2
 from gpiozero import PWMLED, LED
 from dotenv import load_dotenv
 from picamera2 import PiCamera2
-import asyncio
-from socket import socket, AF_INET, SOCK_DGRAM, bind, timeout, error
 import base64
 
 # Load environment variables
@@ -15,16 +13,12 @@ load_dotenv()
 URL = os.getenv('URL')
 NUM_TRAIN = os.getenv('TRAIN')
 
-# Set up socket
-sock = socket(AF_INET, SOCK_DGRAM)
-sock = bind((IP, PORT))
-
 # set up GPIO
 motor = LED(18)
 buzzer = LED(4)
 
 camera = Picamera2()
-camera.configure(camera.create_preview_configuration(main={"format": 'XRGB8888', "size": (640, 480)}))
+camera.configure(camera.create_preview_configuration(main={"format": 'XRGB8888', "size": (400, 400)}))
 camera.start()
 
 while True:
@@ -33,6 +27,10 @@ while True:
 
         frame = camera.capture_array()
         ret, buffer = cv2.imencode('.jpg', frame)
+        frame = buffer.tobytes()
+        image = base64.b64encode(frame).decode('utf-8')
+        
+        requests.post(URL + '/image'+ NUM_TRAIN, json={'train_id': NUM_TRAIN, 'image': image})
 
         if res.status_code == 200:
             data = res.json()
@@ -45,6 +43,8 @@ while True:
 
         else:
             motor.off()
+            requests.post(URL + '/log', json={'speed': 0, 'train': NUM_TRAIN})
         
     except requests.RequestException as e:
+        requests.post(URL + '/log', json={'error': str(e), 'train': NUM_TRAIN})
         print(f'Request error: {e}')

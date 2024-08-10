@@ -96,16 +96,38 @@ def train(id):
     else:
         return jsonify({'error': 'Invalid request method'}), 405
     
-@app.route('/image/<id>', methods=['GET'])
+@app.route('/image/<id>', methods=['GET', 'POST'])
 def image(id):
-    if id == '1':
-        global train1_image
+    if request.method == 'POST':
+        image = request.json.get('base64_data')
+        if image is None:
+            return jsonify({'error': 'Invalid image data'}), 400
         
-        return train1_image
-    elif id == '2':
-        return Response(train2_image, mimetype='image/jpeg')
+        image_id = request.json.get('train_id')
+        image_data = base64.b64decode(image)
+
+        if image_id == 1:
+            global train1_image
+            train1_image = image_data
+        elif image_id == 2:
+            global train2_image
+            train2_image = image_data
+        else:
+            return jsonify({'error': 'Invalid train ID'}), 400
+
+    elif request.method == 'GET':
+        if id == '1':
+            global train1_image
+            
+            return train1_image
+        elif id == '2':
+            return Response(train2_image, mimetype='image/jpeg')
+        else:
+            return jsonify({'error': 'Invalid train ID'}), 400
     else:
-        return jsonify({'error': 'Invalid train ID'}), 400
+        return jsonify({'error': 'Invalid request method'}), 405
+
+    
     
 @app.route('/log', methods=['GET', 'POST'])
 def log():
