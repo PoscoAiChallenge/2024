@@ -107,11 +107,12 @@ def image(id):
         if image is None:
             return jsonify({'error': 'Invalid image data'}), 400
         image_data = base64.b64decode(image).decode('utf-8')
-        print(f"Received image data for train {id}")
-        print(image_data)
+        #print(f"Received image data for train {id}")
+        #print(image_data)
 
         if id == 1:
             train1_image = image_data
+            print(train1_image)
         elif id == 2:
             train2_image = image_data
         else:
