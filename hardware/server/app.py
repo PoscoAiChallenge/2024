@@ -117,11 +117,9 @@ def image(id):
 
     elif request.method == 'GET':
         if id == '1':
-            global train1_image
-            
             return train1_image
         elif id == '2':
-            return Response(train2_image)
+            return train2_image
         else:
             return jsonify({'error': 'Invalid train ID'}), 400
     else:
