@@ -121,7 +121,7 @@ def image(id):
             
             return train1_image
         elif id == '2':
-            return Response(train2_image, mimetype='image/jpeg')
+            return Response(train2_image)
         else:
             return jsonify({'error': 'Invalid train ID'}), 400
     else:
