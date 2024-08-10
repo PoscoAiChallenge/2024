@@ -10,8 +10,8 @@ train1_stat = 0
 train2_stat = 0
 
 #images
-train1_image = b''
-train2_image = b''
+train1_image = ''
+train2_image = ''
 
 #log data
 log_data = []
