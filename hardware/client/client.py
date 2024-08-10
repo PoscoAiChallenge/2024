@@ -30,7 +30,7 @@ while True:
         frame = buffer.tobytes()
         image = base64.b64encode(frame).decode('utf-8')
         
-        requests.post(URL + '/image'+ NUM_TRAIN, json={'image': image})
+        requests.post(URL + '/image/'+ NUM_TRAIN, json={'image': image})
         print(image)
 
         if res.status_code == 200:
