@@ -61,9 +61,32 @@ def socket_listener():
         except Exception as e:
             print(f"Socket error: {e}")
 
+def socket_sender():
+    socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    socket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+    socket.bind((SOCKET_HOST, SOCKET_PORT))
+    
+    while True:
+        try:
+
+            global train1_image
+            global train2_image
+            recv_data, addr = socket.recvfrom(BUFFER_SIZE)
+
+            if b'1' in recv_data:
+                socket.sendto(train1_image, (SOCKET_HOST, SOCKET_PORT))
+            elif b'2' in recv_data:
+                socket.sendto(train2_image, (SOCKET_HOST, SOCKET_PORT))
+            else:
+                print("Received invalid data")
+        except Exception as e:
+            print(f"Socket error: {e}")
+
 # Start socket listener in a separate thread
 socket_thread = threading.Thread(target=socket_listener, daemon=True)
 socket_thread.start()
+socket_sender_thread = threading.Thread(target=socket_sender, daemon=True)
+socket_sender_thread.start()
 
 @app.route('/')
 def index():
@@ -96,29 +119,13 @@ def train(id):
     else:
         return jsonify({'error': 'Invalid request method'}), 405
     
-@app.route('/image/<id>', methods=['GET', 'POST'])
+@app.route('/image/<id>', methods=['GET'])
 def image(id):
 
     global train1_image
     global train2_image
 
-    if request.method == 'POST':
-        image = request.json.get('image')
-        if image is None:
-            return jsonify({'error': 'Invalid image data'}), 400
-        image_data = base64.b64decode(image)
-        #print(f"Received image data for train {id}")
-        #print(image_data)
-
-        if id == 1:
-            train1_image = image_data
-            print(train1_image)
-        elif id == 2:
-            train2_image = image_data
-        else:
-            return jsonify({'error': 'Invalid train ID'}), 400
-
-    elif request.method == 'GET':
+    if request.method == 'GET':
         if id == '1':
             return train1_image
         elif id == '2':

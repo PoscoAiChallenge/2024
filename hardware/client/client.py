@@ -5,6 +5,8 @@ from gpiozero import PWMLED, LED
 from dotenv import load_dotenv
 from picamera2 import Picamera2
 import base64
+import socket
+import json
 
 # Load environment variables
 load_dotenv()
@@ -12,6 +14,10 @@ load_dotenv()
 # Set up GPIO
 URL = os.getenv('URL')
 NUM_TRAIN = os.getenv('TRAIN')
+
+# Set up Socket
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.connect((URL, 9000))
 
 # set up GPIO
 motor = LED(18)
@@ -30,8 +36,13 @@ while True:
         ret, buffer = cv2.imencode('.jpg', frame)
         frame = buffer
         image = base64.b64encode(frame).decode('utf-8')
-        
-        requests.post(URL + '/image/'+ NUM_TRAIN, json={'image': image})
+
+        data  = {
+            'train_id': NUM_TRAIN,
+            'image': image
+        }
+
+        s.sendall(json.dumps(data).encode('utf-8'))
 
         if res.status_code == 200:
             data = res.json()
