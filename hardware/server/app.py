@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify, Response, render_template, redirect
-import socket
+from socket import *
 import json
 import time
 import threading
@@ -25,8 +25,8 @@ SOCKET_PORT = 9000
 BUFFER_SIZE = 65536  # Adjust this based on your expected data size
 
 def socket_listener():
-    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    sock = socket(AF_INET, SOCK_DGRAM)
+    sock.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
     sock.bind((SOCKET_HOST, SOCKET_PORT))
     print(f"Socket listening on port {SOCKET_PORT}")
 
@@ -48,9 +48,11 @@ def socket_listener():
                 if train_id == 1:
                     global train1_image
                     train1_image = image_data
+                    print(train1_image)
                 elif train_id == 2:
                     global train2_image
                     train2_image = image_data
+                    print(train2_image)
                 else:
                     print(f"Received data for unknown train ID: {train_id}")
             else:
@@ -61,32 +63,10 @@ def socket_listener():
         except Exception as e:
             print(f"Socket error: {e}")
 
-def socket_sender():
-    socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    socket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-    socket.bind((SOCKET_HOST, SOCKET_PORT))
-    
-    while True:
-        try:
-
-            global train1_image
-            global train2_image
-            recv_data, addr = socket.recvfrom(BUFFER_SIZE)
-
-            if b'1' in recv_data:
-                socket.sendto(train1_image, (SOCKET_HOST, SOCKET_PORT))
-            elif b'2' in recv_data:
-                socket.sendto(train2_image, (SOCKET_HOST, SOCKET_PORT))
-            else:
-                print("Received invalid data")
-        except Exception as e:
-            print(f"Socket error: {e}")
 
 # Start socket listener in a separate thread
 socket_thread = threading.Thread(target=socket_listener, daemon=True)
 socket_thread.start()
-socket_sender_thread = threading.Thread(target=socket_sender, daemon=True)
-socket_sender_thread.start()
 
 @app.route('/')
 def index():
