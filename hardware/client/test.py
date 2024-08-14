@@ -9,5 +9,6 @@ load_dotenv()
 URL = os.getenv('URL')
 NUM_TRAIN = os.getenv('TRAIN')
 
-res = requests.get(URL + '/speed/' + NUM_TRAIN)
-print(res.status_code)
+while True:
+    res = requests.get(URL + '/speed/' + NUM_TRAIN)
+    print(res.status_code)
