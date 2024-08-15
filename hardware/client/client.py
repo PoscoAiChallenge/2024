@@ -1,62 +1,51 @@
-import os
-import requests
-import cv2
-from gpiozero import PWMLED, LED
-from dotenv import load_dotenv
-from picamera2 import Picamera2
-import base64
-import socket
+
 import json
+import base64
+from dotenv import load_dotenv
+import requests
+import os
+import gpiozero
+from picamera2 import Picamera2
+import cv2
+import threading
 
-# Load environment variables
 load_dotenv()
-
-# Set up GPIO
 URL = os.getenv('URL')
 NUM_TRAIN = os.getenv('TRAIN')
 
-# Set up Socket
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-s.connect((URL, 9000))
-
-# set up GPIO
-motor = LED(18)
-buzzer = LED(4)
+motor = gpiozero.LED(18)
 
 camera = Picamera2()
-camera.configure(camera.create_preview_configuration(main={"format": 'XRGB8888', "size": (300, 300)}))
+camera.configure(camera.create_preview_configuration(main={"format": 'XRGB8888', "size": (400, 400)}))
 camera.start()
 
-while True:
-    try:
-        speed = 0
-        res = requests.get(URL + '/speed/' + NUM_TRAIN)
-
+def generate_frames():
+    while True:
         frame = camera.capture_array()
         ret, buffer = cv2.imencode('.jpg', frame)
-        frame = buffer
-        image = base64.b64encode(frame).decode('utf-8')
+        frame = buffer.tobytes()
 
-        data  = {
-            'train_id': NUM_TRAIN,
-            'image': image
-        }
+        return frame
+    
+def send_image():
+    while True:
+        image = generate_frames()
+        base64_image = base64.b64encode(image).decode('utf-8')
+        requests.post(URL + '/image', json={'train_id': NUM_TRAIN, 'image': base64_image})
 
-        s.sendall(json.dumps(data).encode('utf-8'))
+image_thread = threading.Thread(target=send_image, daemon=True)
+image_thread.start()
 
-        if res.status_code == 200:
-            data = res.json()
-            speed = int(data['status'])
-            
-        if speed != 0:
-            speed = max(0, min(speed, 100))  # Clamp speed between 0 and 100
-            motor.on()
-            requests.post(URL + '/log', json={'speed': speed, 'train': NUM_TRAIN})
-
-        else:
-            motor.off()
-            requests.post(URL + '/log', json={'speed': 0, 'train': NUM_TRAIN})
-        
-    except requests.RequestException as e:
-        requests.post(URL + '/log', json={'error': str(e), 'train': NUM_TRAIN})
-        print(f'Request error: {e}')
+while True:
+    res = requests.get(URL + '/speed/' + NUM_TRAIN)
+    number = res.json().get('status')
+    if number == '0':
+        motor.off()
+        requests.post(URL + '/log', json={'status': 'Motor' + NUM_TRAIN + ' is off'})
+    elif number == '1':
+        motor.on()
+        requests.post(URL + '/log', json={'status': 'Motor' + NUM_TRAIN + ' is on'})
+    else:
+        print('Invalid speed value:', number)
+        motor.off()
+        requests.post(URL + '/log', json={'status': 'Invalid speed value: ' + number})
