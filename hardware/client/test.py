@@ -12,7 +12,8 @@ SERVER_IP = os.getenv('SERVER_IP')
 URL = os.getenv('URL')
 NUM_TRAIN = os.getenv('TRAIN')
 
-server = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
+server = socket.socket(family=socket.AF_INET, type=socket.SOCK_STREAM)
+server.connect((SERVER_IP, 9000))
 
 camera = Picamera2()
 camera.configure(camera.create_preview_configuration(main={"format": 'XRGB8888', "size": (400, 400)}))
@@ -40,6 +41,6 @@ while True:
 
     '''
 
-    server.sendto(str.encode(data), (SERVER_IP, 9000))
+    server.send(data.encode())
     print("sending image")
     time.sleep(0.01)
