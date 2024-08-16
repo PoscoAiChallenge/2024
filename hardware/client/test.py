@@ -29,7 +29,16 @@ def generate_frames():
 while True:
     image = generate_frames()
     base64_image = base64.b64encode(image).decode('utf-8')
-    s.sendto(json.dumps({'train_id': str(NUM_TRAIN), 'image': base64_image}).encode(), (SERVER_IP, 9000))
+
+    data = f'''
+    {{
+        "train_id": "{str(NUM_TRAIN)}",
+        "image": "{base64_image}"
+    }}
+
+    '''
+
+    s.sendto(data.encode(), (SERVER_IP, 9000))
     print('Image sent')
     print(base64_image[:10])
     time.sleep(0.01)
