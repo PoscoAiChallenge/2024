@@ -21,12 +21,11 @@ app = Flask(__name__)
 
 # Socket configuration
 SOCKET_HOST = ""  # Listen on all available interfaces
-SOCKET_PORT = 9000
 BUFFER_SIZE = 10240 
 
 def socket_listener():
     UDPServerSocket = socket(family=AF_INET, type=SOCK_DGRAM)
-    UDPServerSocket.bind((SOCKET_HOST, SOCKET_PORT))
+    UDPServerSocket.bind((SOCKET_HOST, 9000))
 
     while True:
         try:
@@ -67,7 +66,7 @@ def socket_listener():
 
 def socket_sender():
     UDDPServerSocket = socket(family=AF_INET, type=SOCK_DGRAM)
-    UDDPServerSocket.bind((SOCKET_HOST, SOCKET_PORT))
+    UDDPServerSocket.bind((SOCKET_HOST, 8999))
 
     while True:
         bytesAddressPair = UDDPServerSocket.recvfrom(BUFFER_SIZE)
