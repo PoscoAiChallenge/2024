@@ -38,7 +38,6 @@ def send_image():
         image = generate_frames()
         base64_image = base64.b64encode(image).decode('utf-8')
         s.sendto(json.dumps({'train_id': str(NUM_TRAIN), 'image': base64_image}).encode(), (SERVER_IP, 9000))
-        print('Image sent')
         time.sleep(0.01)
 
 image_thread = threading.Thread(target=send_image, daemon=True)
