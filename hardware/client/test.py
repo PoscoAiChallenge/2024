@@ -37,7 +37,6 @@ while True:
     }}
 
     '''
-    print(base64_image)
 
     server.sendto(str.encode(data), (SERVER_IP, 9000))
     print("sending image")
