@@ -65,18 +65,18 @@ def socket_listener():
             print(f"Socket error: {e}")
 
 def socket_sender():
-    UDDPServerSocket = socket(family=AF_INET, type=SOCK_DGRAM)
-    UDDPServerSocket.bind((SOCKET_HOST, 8999))
+    UDDPServerSendSocket = socket(family=AF_INET, type=SOCK_DGRAM)
+    UDDPServerSendSocket.bind((SOCKET_HOST, 8999))
 
     while True:
-        bytesAddressPair = UDDPServerSocket.recvfrom(BUFFER_SIZE)
+        bytesAddressPair = UDDPServerSendSocket.recvfrom(BUFFER_SIZE)
         message = bytesAddressPair[0]
         address = bytesAddressPair[1]
 
         if message.decode() == '1':
-            UDDPServerSocket.sendto(str(train1_image).encode(), address)
+            UDDPServerSendSocket.sendto(str(train1_image).encode(), address)
         elif message.decode() == '2':
-            UDDPServerSocket.sendto(str(train2_image).encode(), address)
+            UDDPServerSendSocket.sendto(str(train2_image).encode(), address)
         else:
             print("Invalid train ID")
 
