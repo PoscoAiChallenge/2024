@@ -39,6 +39,5 @@ while True:
     '''
 
     s.sendto(data.encode(), (SERVER_IP, 9000))
-    print('Image sent')
-    print(base64_image[:10])
+    print(data)
     time.sleep(0.01)
