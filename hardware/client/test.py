@@ -31,8 +31,6 @@ while True:
     image = generate_frames()
     base64_image = base64.b64encode(image).decode('utf-8')
 
-    base64_image = "sdfsdfs"
-
     data = f'''
     {{
         "train_id": "{str(NUM_TRAIN)}",
