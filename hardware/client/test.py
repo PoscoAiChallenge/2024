@@ -41,4 +41,3 @@ while True:
 
     server.send(data.encode())
     print("sending image")
-    time.sleep(0.1)
