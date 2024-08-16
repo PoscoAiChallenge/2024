@@ -38,6 +38,7 @@ def send_image():
         image = generate_frames()
         base64_image = base64.b64encode(image).decode('utf-8')
         s.sendto(json.dumps({'train_id': str(NUM_TRAIN), 'image': base64_image}).encode(), (SERVER_IP, 9000))
+        print('Image sent')
         time.sleep(0.01)
 
 image_thread = threading.Thread(target=send_image, daemon=True)
@@ -47,10 +48,10 @@ while True:
     res = requests.get(URL + '/speed/' + NUM_TRAIN)
     number = res.json().get('status')
 
-    if number == '0':
+    if number == 0:
         motor.off()
         requests.post(URL + '/log', json={'status': 'Motor' + NUM_TRAIN + ' is off'})
-    elif number == '1':
+    elif number == 1:
         motor.on()
         requests.post(URL + '/log', json={'status': 'Motor' + NUM_TRAIN + ' is on'})
     else:

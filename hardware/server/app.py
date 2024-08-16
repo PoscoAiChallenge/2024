@@ -47,13 +47,9 @@ def socket_listener():
                 
                 if train_id == '1':
                     train1_image = base64_image
-                    
-                    print(train1_image)
 
                 elif train_id == '2':
                     train2_image = base64_image
-
-                    print(train2_image)
                     
                 else:
                     print(f"Received data for unknown train ID: {train_id}")
