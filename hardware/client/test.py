@@ -38,6 +38,6 @@ while True:
 
     '''
 
-    s.sendto(data.encode(), (SERVER_IP, 9000))
+    s.sendto(str.encode(data), (SERVER_IP, 9000))
     print(data)
     time.sleep(0.01)
