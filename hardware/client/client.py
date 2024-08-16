@@ -9,12 +9,13 @@ from picamera2 import Picamera2
 import cv2
 import threading
 from socket import *
+import time
 
 load_dotenv()
+SERVER_IP = os.getenv('SERVER_IP')
 URL = os.getenv('URL')
 NUM_TRAIN = os.getenv('TRAIN')
 
-SERVER_IP = os.getenv('SERVER_IP')
 
 motor = gpiozero.LED(18)
 
@@ -37,6 +38,7 @@ def send_image():
         image = generate_frames()
         base64_image = base64.b64encode(image).decode('utf-8')
         s.sendto(json.dumps({'train_id': NUM_TRAIN, 'image': base64_image}).encode(), (SERVER_IP, 9000))
+        time.sleep(0.01)
 
 image_thread = threading.Thread(target=send_image, daemon=True)
 image_thread.start()
@@ -44,6 +46,7 @@ image_thread.start()
 while True:
     res = requests.get(URL + '/speed/' + NUM_TRAIN)
     number = res.json().get('status')
+
     if number == '0':
         motor.off()
         requests.post(URL + '/log', json={'status': 'Motor' + NUM_TRAIN + ' is off'})
@@ -54,3 +57,4 @@ while True:
         print('Invalid speed value:', number)
         motor.off()
         requests.post(URL + '/log', json={'status': 'Invalid speed value: ' + number})
+    time.sleep(0.01)
