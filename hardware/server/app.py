@@ -20,23 +20,21 @@ log_data = []
 app = Flask(__name__)
 
 # Socket configuration
-SOCKET_HOST = ''  # Listen on all available interfaces
+SOCKET_HOST = ""  # Listen on all available interfaces
 SOCKET_PORT = 9000
-BUFFER_SIZE = 65536  # Adjust this based on your expected data size
+BUFFER_SIZE = 2048 
 
 def socket_listener():
-    sock = socket(AF_INET, SOCK_DGRAM)
-    sock.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
-    sock.bind((SOCKET_HOST, SOCKET_PORT))
-    print(f"Socket listening on port {SOCKET_PORT}")
+    UDPServerSocket = socket(family=AF_INET, type=SOCK_DGRAM)
+    UDPServerSocket.bind((SOCKET_HOST, SOCKET_PORT))
 
     while True:
         try:
-            data, addr = sock.recvfrom(BUFFER_SIZE)
-            print(f"Received data from {addr}")
-            print(data)
+            recv_data = UDPServerSocket.recvfrom(BUFFER_SIZE)
+            data = recv_data[0]
+
             # Decode the received data
-            json_data = json.loads(data.decode('utf-8'))
+            json_data = json.loads(data.decode())
             
             # Extract train ID and base64 encoded image
             train_id = json_data.get('train_id')
@@ -45,14 +43,18 @@ def socket_listener():
             if base64_image:
                 image_data = base64.b64decode(base64_image)
                 
-                if train_id == 1:
+                if train_id == '1':
                     global train1_image
                     train1_image = image_data
+                    
                     print(train1_image)
-                elif train_id == 2:
+
+                elif train_id == '2':
                     global train2_image
                     train2_image = image_data
+
                     print(train2_image)
+                    
                 else:
                     print(f"Received data for unknown train ID: {train_id}")
             else:

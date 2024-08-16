@@ -8,12 +8,17 @@ import gpiozero
 from picamera2 import Picamera2
 import cv2
 import threading
+from socket import *
 
 load_dotenv()
 URL = os.getenv('URL')
 NUM_TRAIN = os.getenv('TRAIN')
 
+SERVER_IP = os.getenv('SERVER_IP')
+
 motor = gpiozero.LED(18)
+
+s = socket(family=AF_INET, type=SOCK_DGRAM)
 
 camera = Picamera2()
 camera.configure(camera.create_preview_configuration(main={"format": 'XRGB8888', "size": (400, 400)}))
@@ -31,7 +36,7 @@ def send_image():
     while True:
         image = generate_frames()
         base64_image = base64.b64encode(image).decode('utf-8')
-        requests.post(URL + '/image', json={'train_id': NUM_TRAIN, 'image': base64_image})
+        s.sendto(json.dumps({'train_id': NUM_TRAIN, 'image': base64_image}).encode(), (SERVER_IP, 9000))
 
 image_thread = threading.Thread(target=send_image, daemon=True)
 image_thread.start()
