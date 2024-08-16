@@ -30,6 +30,8 @@ while True:
     image = generate_frames()
     base64_image = base64.b64encode(image).decode('utf-8')
 
+    base64_image = "sdfsdfs"
+
     data = f'''
     {{
         "train_id": "{str(NUM_TRAIN)}",
@@ -38,8 +40,6 @@ while True:
 
     '''
 
-    ab = "82ueo427u3904782"
-
-    server.sendto(str.encode(ab), (SERVER_IP, 9000))
+    server.sendto(str.encode(data), (SERVER_IP, 9000))
     print("sending image")
     time.sleep(0.01)
