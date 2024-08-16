@@ -22,7 +22,7 @@ app = Flask(__name__)
 # Socket configuration
 SOCKET_HOST = ""  # Listen on all available interfaces
 SOCKET_PORT = 9000
-BUFFER_SIZE = 2048 
+BUFFER_SIZE = 10240 
 
 def socket_listener():
     UDPServerSocket = socket(family=AF_INET, type=SOCK_DGRAM)
@@ -30,6 +30,9 @@ def socket_listener():
 
     while True:
         try:
+            global train1_image
+            global train2_image
+
             recv_data = UDPServerSocket.recvfrom(BUFFER_SIZE)
             data = recv_data[0]
 
@@ -41,17 +44,14 @@ def socket_listener():
             base64_image = json_data.get('image')
             
             if base64_image:
-                image_data = base64.b64decode(base64_image)
                 
                 if train_id == '1':
-                    global train1_image
-                    train1_image = image_data
+                    train1_image = base64_image
                     
                     print(train1_image)
 
                 elif train_id == '2':
-                    global train2_image
-                    train2_image = image_data
+                    train2_image = base64_image
 
                     print(train2_image)
                     
@@ -65,10 +65,28 @@ def socket_listener():
         except Exception as e:
             print(f"Socket error: {e}")
 
+def socket_sender():
+    UDDPServerSocket = socket(family=AF_INET, type=SOCK_DGRAM)
+    UDDPServerSocket.bind((SOCKET_HOST, SOCKET_PORT))
+
+    while True:
+        bytesAddressPair = UDDPServerSocket.recvfrom(BUFFER_SIZE)
+        message = bytesAddressPair[0]
+        address = bytesAddressPair[1]
+
+        if message.decode() == '1':
+            UDDPServerSocket.sendto(str(train1_image).encode(), address)
+        elif message.decode() == '2':
+            UDDPServerSocket.sendto(str(train2_image).encode(), address)
+        else:
+            print("Invalid train ID")
+
 
 # Start socket listener in a separate thread
-socket_thread = threading.Thread(target=socket_listener, daemon=True)
-socket_thread.start()
+socket_recv_thread = threading.Thread(target=socket_listener, daemon=True)
+socket_send_thread = threading.Thread(target=socket_sender, daemon=True)
+socket_send_thread.start()
+socket_recv_thread.start()
 
 @app.route('/')
 def index():
