@@ -56,5 +56,5 @@ while True:
     else:
         print('Invalid speed value:', number)
         motor.off()
-        requests.post(URL + '/log', json={'status': 'Invalid speed value: ' + number})
+        requests.post(URL + '/log', json={'status': 'Invalid speed value: ' + str(number)})
     time.sleep(0.01)
