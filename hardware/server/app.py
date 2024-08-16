@@ -25,6 +25,7 @@ BUFFER_SIZE = 10240
 
 def socket_listener():
     UDPServerSocket = socket(family=AF_INET, type=SOCK_DGRAM)
+    UDPServerSocket.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
     UDPServerSocket.bind((SOCKET_HOST, 9000))
 
     while True:
@@ -66,6 +67,7 @@ def socket_listener():
 
 def socket_sender():
     UDDPServerSendSocket = socket(family=AF_INET, type=SOCK_DGRAM)
+    UDDPServerSendSocket.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
     UDDPServerSendSocket.bind((SOCKET_HOST, 8999))
 
     while True:
