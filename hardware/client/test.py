@@ -38,6 +38,8 @@ while True:
 
     '''
 
-    server.sendto(str.encode(data), (SERVER_IP, 9000))
+    ab = "82ueo427u3904782"
+
+    server.sendto(str.encode(ab), (SERVER_IP, 9000))
     print("sending image")
     time.sleep(0.01)
