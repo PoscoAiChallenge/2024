@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 import os
 from picamera2 import Picamera2
 import cv2
-from socket import *
+import socket
 import time
 
 load_dotenv()
@@ -12,7 +12,7 @@ SERVER_IP = os.getenv('SERVER_IP')
 URL = os.getenv('URL')
 NUM_TRAIN = os.getenv('TRAIN')
 
-s = socket(family=AF_INET, type=SOCK_DGRAM)
+server = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
 
 camera = Picamera2()
 camera.configure(camera.create_preview_configuration(main={"format": 'XRGB8888', "size": (400, 400)}))
@@ -38,6 +38,6 @@ while True:
 
     '''
 
-    s.sendto(str.encode(data), (SERVER_IP, 9000))
-    print(data)
+    server.sendto(str.encode(data), (SERVER_IP, 9000))
+    print("sending image")
     time.sleep(0.01)
