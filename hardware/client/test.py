@@ -56,12 +56,14 @@ while True:
     stime = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S.%f')
 
     data = "{ image: '" + base64_image + "', time: '" + stime + "', url: '" + URL + "', num_train: '" + NUM_TRAIN + "' }"
-    image_length = str(len(data))
+    data_length = str(len(data))
+    image_length = str(len(base64_image))
 
     print(f"Image length: {image_length}")
+    print(f"Data length: {data_length}")
     print(f"Time: {stime}")
 
-    server.sendall(image_length.encode().ljust(64))
+    server.sendall(data_length.encode().ljust(64))
     server.send(data.encode())
     server.send(stime.encode().ljust(64))
 
