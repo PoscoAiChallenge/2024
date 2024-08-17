@@ -71,7 +71,7 @@ def socket_sender():
 
     while True:
         message = recvall(connection, 64)
-        message = str(message.decode())
+        message = str(message.decode()).strip()
         print(message)
 
         if message == '1':
