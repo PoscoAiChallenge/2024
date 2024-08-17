@@ -55,10 +55,6 @@ while True:
     base64_image = base64.b64encode(image).decode('utf-8')
     stime = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S.%f')
 
-    print(f"Image length: {image_length}")
-    print(f"Time: {stime}")
-    
-
     data = f'''
     {
         "num_train": "{NUM_TRAIN}",
@@ -67,6 +63,9 @@ while True:
     '''
 
     image_length = str(len(data))
+
+    print(f"Image length: {image_length}")
+    print(f"Time: {stime}")
 
     server.sendall(image_length.encode().ljust(64))
     server.send(data.encode())
