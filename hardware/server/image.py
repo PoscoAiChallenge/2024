@@ -72,6 +72,7 @@ def socket_sender():
     while True:
         message = recvall(connection, 64)
         message = str(message.decode())
+        print(message)
 
         if message == '1':
             train1_image_length = str(len(train1_image))
