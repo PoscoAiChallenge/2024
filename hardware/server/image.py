@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify, Response, render_template, redirect
-from socket import *
+import socket
 import json
 import time
 import base64
