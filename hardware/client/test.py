@@ -28,7 +28,7 @@ def generate_frames():
         frame = camera.capture_array()
         
         # Convert XRGB8888 to BGR
-        frame_bgr = cv2.cvtColor(frame, cv2.XBGR8888)
+        frame_bgr = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
 
         # Motion detection (if needed)
         if prev_frame is not None:
