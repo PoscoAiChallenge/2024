@@ -75,13 +75,13 @@ def socket_sender():
 
         if message == '1':
             train1_image_length = str(len(train1_image)).encode().ljust(64)
-            send_server.sendall(train1_image_length)
-            send_server.send(train1_image.encode())
+            connection.sendall(train1_image_length)
+            connection.send(train1_image.encode())
 
         elif message == '2':
             train2_image_length = str(len(train2_image)).encode().ljust(64)
-            send_server.sendall(train2_image_length)
-            send_server.send(train2_image.encode())
+            connection.sendall(train2_image_length)
+            connection.send(train2_image.encode())
         else:
             print("Invalid train ID")
 
