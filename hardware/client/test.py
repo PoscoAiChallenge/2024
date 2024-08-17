@@ -66,6 +66,7 @@ while True:
     })
 
     data = str(data)
+    print(data)
 
     server.sendall(image_length.encode().ljust(64))
     server.send(data.encode())
