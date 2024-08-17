@@ -70,7 +70,8 @@ def socket_sender():
     print(f"Connection from {address} has been established")
 
     while True:
-        message = recvall(connection, 64).strip()
+        message = recvall(connection, 64)
+        print(message.decode())
 
         if message.decode() == '1':
             train1_image_length = str(len(train1_image))
