@@ -35,8 +35,6 @@ def socket_receiver():
             length = length.decode()
             data = recvall(connection, int(length))
 
-            print("message received")
-
             # Decode the received data
             json_data = json.loads(data.decode())
                 
