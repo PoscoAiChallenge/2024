@@ -56,6 +56,10 @@ while True:
     image_length = str(len(base64_image))
     stime = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S.%f')
 
+    print(f"Image length: {image_length}")
+    print(f"Time: {stime}")
+    time.sleep(2)
+
     server.sendall(image_length.encode())
     server.send(base64_image.encode())
     server.send(stime.encode())
