@@ -19,14 +19,14 @@ def recvall(sock, count):
             count -= len(newbuf)
         return buf
 
-
-TCPServerSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-TCPServerSocket.bind((SOCKET_HOST, 9000))
-TCPServerSocket.listen(1)
-
-connection, address = TCPServerSocket.accept()
-
 def socket_receiver():
+
+    TCPServerSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    TCPServerSocket.bind((SOCKET_HOST, 9000))
+    TCPServerSocket.listen(1)
+
+    connection, address = TCPServerSocket.accept()
+
     global train1_image, train2_image
 
     while True:
@@ -67,19 +67,19 @@ def socket_sender():
     send_server.listen(1)
 
     connection, address = send_server.accept()
+    print(f"Connection from {address} has been established")
 
     while True:
-        message = recvall(connection, 64)
-        print(message.decode())
+        message = recvall(connection, 64).strip()
 
         if message.decode() == '1':
             train1_image_length = str(len(train1_image))
-            send_server.send(train1_image_length.encode(), address)
+            send_server.sendall(train1_image_length.encode(), address)
             send_server.send(train1_image.encode(), address)
 
         elif message.decode() == '2':
             train2_image_length = str(len(train2_image))
-            send_server.send(train2_image_length.encode(), address)
+            send_server.sendall(train2_image_length.encode(), address)
             send_server.send(train2_image.encode(), address)
         else:
             print("Invalid train ID")
