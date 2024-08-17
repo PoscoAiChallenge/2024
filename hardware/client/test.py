@@ -69,7 +69,7 @@ while True:
         "image": base64_image
     })
 
-    server.send(data.encode())
-    print("sending image")
+    #server.send(data.encode())
+    #print("sending image")
     
     time.sleep(0.1)  # Add a small delay to control the frame rate
