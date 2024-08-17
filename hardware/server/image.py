@@ -72,8 +72,13 @@ def socket_sender():
         message = recvall(connection, 64)
 
         if message.decode() == '1':
+            train1_image_length = str(len(train1_image))
+            send_server.send(train1_image_length.encode(), address)
             send_server.send(train1_image.encode(), address)
+            
         elif message.decode() == '2':
+            train2_image_length = str(len(train2_image))
+            send_server.send(train2_image_length.encode(), address)
             send_server.send(train2_image.encode(), address)
         else:
             print("Invalid train ID")
