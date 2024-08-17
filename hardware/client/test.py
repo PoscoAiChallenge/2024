@@ -17,7 +17,7 @@ server = socket.socket(family=socket.AF_INET, type=socket.SOCK_STREAM)
 server.connect((SERVER_IP, 9000))
 
 camera = Picamera2()
-camera.configure(camera.create_preview_configuration(main={"format": 'SBGGR10_1X10', "size": (400, 400)}))
+camera.configure(camera.create_preview_configuration(main={"format": 'XBGR8888', "size": (400, 400)}))
 camera.start()
 
 def generate_frames():
@@ -28,7 +28,7 @@ def generate_frames():
         frame = camera.capture_array()
         
         # Convert XRGB8888 to BGR
-        frame_bgr = cv2.cvtColor(frame, cv2.SBGGR10_1X10)
+        frame_bgr = cv2.cvtColor(frame, cv2.XBGR8888)
 
         # Motion detection (if needed)
         if prev_frame is not None:
