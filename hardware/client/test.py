@@ -53,7 +53,6 @@ def generate_frames():
 while True:
     image = generate_frames()
     base64_image = base64.b64encode(image).decode('utf-8')
-    image_length = str(len(base64_image))
     stime = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S.%f')
 
     print(f"Image length: {image_length}")
@@ -66,7 +65,8 @@ while True:
         "image": "{base64_image}"
     }
     '''
-    print(data)
+
+    image_length = str(len(data))
 
     server.sendall(image_length.encode().ljust(64))
     server.send(data.encode())
