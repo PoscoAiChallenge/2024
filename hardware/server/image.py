@@ -35,6 +35,8 @@ def socket_receiver():
             length = length.decode()
             data = recvall(connection, int(length))
 
+            print("message received")
+
             # Decode the received data
             json_data = json.loads(data.decode())
                 
@@ -70,12 +72,13 @@ def socket_sender():
 
     while True:
         message = recvall(connection, 64)
+        print(message.decode())
 
         if message.decode() == '1':
             train1_image_length = str(len(train1_image))
             send_server.send(train1_image_length.encode(), address)
             send_server.send(train1_image.encode(), address)
-            
+
         elif message.decode() == '2':
             train2_image_length = str(len(train2_image))
             send_server.send(train2_image_length.encode(), address)
