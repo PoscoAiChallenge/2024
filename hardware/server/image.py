@@ -63,59 +63,33 @@ def socket_sender():
     global train1_image, train2_image
 
     send_server = socket.socket(family=socket.AF_INET, type=socket.SOCK_STREAM)
-    send_server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     send_server.bind((SOCKET_HOST, 8999))
     send_server.listen(1)
 
-    print("Waiting for initial connection on port 8999...")
+    connection, address = send_server.accept()
+    print(f"Connection from {address} has been established")
 
     while True:
-        try:
+        message = recvall(connection, 64)
+
+        if not message:
+            continue
+
+        if str(message.decode().rstrip()) == '1':
+            train1_image_length = str(len(train1_image)).encode().ljust(64)
+            connection.sendall(train1_image_length)
+            connection.send(train1_image.encode())
+
+        elif str(message.decode().rstrip()) == '2':
+            train2_image_length = str(len(train2_image)).encode().ljust(64)
+            connection.sendall(train2_image_length)
+            connection.send(train2_image.encode())
+        else:
+            print("Invalid train ID")
+
+        if connection.fileno() == -1:
             connection, address = send_server.accept()
-            print(f"Connection from {address} has been established")
 
-            while True:
-                try:
-                    message = recvall(connection, 64)
-
-                    if not message:
-                        print("No message received, waiting for new message...")
-                        continue
-
-                    message_str = message.decode().strip()
-
-                    if message_str == '1':
-                        train1_image_length = str(len(train1_image)).encode().ljust(64)
-                        connection.sendall(train1_image_length)
-                        connection.sendall(train1_image.encode())
-                        print("Sent train 1 image")
-
-                    elif message_str == '2':
-                        train2_image_length = str(len(train2_image)).encode().ljust(64)
-                        connection.sendall(train2_image_length)
-                        connection.sendall(train2_image.encode())
-                        print("Sent train 2 image")
-
-                    else:
-                        print(f"Invalid train ID: {message_str}")
-                        connection.sendall(b"Invalid train ID".ljust(64))
-
-                except (ConnectionResetError, BrokenPipeError) as e:
-                    print(f"Connection error: {e}")
-                    break
-                except Exception as e:
-                    print(f"Unexpected error: {e}")
-                    break
-
-        except Exception as e:
-            print(f"Error accepting connection: {e}")
-
-        finally:
-            if 'connection' in locals() and connection:
-                connection.close()
-                print("Connection closed")
-
-        print("Waiting for new connection...")
 def main():
     receiver_thread = threading.Thread(target=socket_receiver, daemon=True)
     sender_thread = threading.Thread(target=socket_sender, daemon=True)
