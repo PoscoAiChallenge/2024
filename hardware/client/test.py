@@ -69,7 +69,7 @@ while True:
     server.send(base64_image.encode())
     server.send(stime.encode().ljust(64))
 
-    time.sleep(0.5)
+    time.sleep(0.05)
 
     
 
