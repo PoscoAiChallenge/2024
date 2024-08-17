@@ -71,17 +71,16 @@ def socket_sender():
 
     while True:
         message = recvall(connection, 64)
-        message = str(message.decode().rstrip())
 
         if not message:
             continue
 
-        elif message == '1':
+        if str(message.decode().rstrip()) == '1':
             train1_image_length = str(len(train1_image)).encode().ljust(64)
             connection.sendall(train1_image_length)
             connection.send(train1_image.encode())
 
-        elif message == '2':
+        elif str(message.decode().rstrip()) == '2':
             train2_image_length = str(len(train2_image)).encode().ljust(64)
             connection.sendall(train2_image_length)
             connection.send(train2_image.encode())
