@@ -60,12 +60,12 @@ while True:
     print(f"Time: {stime}")
     
 
-    data = json.dumps({
-        "train_id": str(NUM_TRAIN),
-        "image": base64_image
-    })
-
-    data = str(data)
+    data = f'''
+    {
+        "num_train": "{NUM_TRAIN}",
+        "image": "{base64_image}"
+    }
+    '''
     print(data)
 
     server.sendall(image_length.encode().ljust(64))
