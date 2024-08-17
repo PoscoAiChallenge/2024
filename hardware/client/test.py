@@ -61,8 +61,8 @@ while True:
     time.sleep(2)
 
     server.sendall(image_length.encode().ljust(64))
-    server.send(base64_image.encode())
-    server.send(stime.encode().ljust(64))
+    #server.send(base64_image.encode())
+    #server.send(stime.encode().ljust(64))
 
     data = json.dumps({
         "train_id": str(NUM_TRAIN),
