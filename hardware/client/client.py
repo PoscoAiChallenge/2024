@@ -8,7 +8,7 @@ import gpiozero
 from picamera2 import Picamera2
 import cv2
 import threading
-from socket import *
+import socket
 import time
 from datetime import datetime
 
