@@ -63,19 +63,8 @@ while True:
     data_length = str(len(data))
     image_length = str(len(base64_image))
 
-    print(f"Image length: {image_length}")
-    print(f"Data length: {data_length}")
-    print(f"Time: {stime}")
-
     server.sendall(data_length.encode().ljust(64))
     server.send(data.encode())
     server.send(stime.encode().ljust(64))
 
     time.sleep(0.05)
-
-    
-
-    #server.send(data.encode())
-    #print("sending image")
-    
-    time.sleep(0.1)  # Add a small delay to control the frame rate
