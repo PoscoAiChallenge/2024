@@ -57,7 +57,7 @@ while True:
 
     data = f'''
     {
-        "num_train": "{NUM_TRAIN}",
+        "num_train": "{str(NUM_TRAIN)}",
         "image": "{base64_image}"
     }
     '''
