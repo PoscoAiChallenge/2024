@@ -73,7 +73,10 @@ def socket_sender():
         message = recvall(connection, 64)
         message = str(message.decode().rstrip())
 
-        if message == '1':
+        if not message:
+            continue
+
+        elif message == '1':
             train1_image_length = str(len(train1_image)).encode().ljust(64)
             connection.sendall(train1_image_length)
             connection.send(train1_image.encode())
