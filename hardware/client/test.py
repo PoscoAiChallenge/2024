@@ -55,13 +55,7 @@ while True:
     base64_image = base64.b64encode(image).decode('utf-8')
     stime = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S.%f')
 
-    data = f'''
-    {
-        "num_train": "{str(NUM_TRAIN)}",
-        "image": "{base64_image}"
-    }
-    '''
-
+    data = "{ image: '" + base64_image + "', time: '" + stime + "', url: '" + URL + "', num_train: '" + NUM_TRAIN + "' }"
     image_length = str(len(data))
 
     print(f"Image length: {image_length}")
