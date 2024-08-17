@@ -2,7 +2,6 @@ from flask import Flask, request, jsonify, Response, render_template, redirect
 from socket import *
 import json
 import time
-import threading
 import base64
 
 # train status
@@ -21,69 +20,32 @@ app = Flask(__name__)
 
 # Socket configuration
 SOCKET_HOST = ""  # Listen on all available interfaces
-BUFFER_SIZE = 10240 
 
-def socket_listener():
-    UDPServerSocket = socket(family=AF_INET, type=SOCK_DGRAM)
-    UDPServerSocket.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
-    UDPServerSocket.bind((SOCKET_HOST, 9000))
-
-    while True:
-        try:
-            global train1_image
-            global train2_image
-
-            recv_data = UDPServerSocket.recvfrom(BUFFER_SIZE)
-            data = recv_data[0]
-
-            # Decode the received data
-            json_data = json.loads(data.decode())
-            
-            # Extract train ID and base64 encoded image
-            train_id = json_data.get('train_id')
-            base64_image = json_data.get('image')
-            
-            if base64_image:
-                
-                if train_id == '1':
-                    train1_image = base64_image
-
-                elif train_id == '2':
-                    train2_image = base64_image
-                    
-                else:
-                    print(f"Received data for unknown train ID: {train_id}")
-            else:
-                print("Received JSON data without image")
-                
-        except json.JSONDecodeError:
-            print("Received invalid JSON data")
-        except Exception as e:
-            print(f"Socket error: {e}")
+def recvall(sock, count):
+        buf = b''
+        while count:
+            newbuf = sock.recv(count)
+            if not newbuf: return None
+            buf += newbuf
+            count -= len(newbuf)
+        return buf
 
 def socket_sender():
-    UDDPServerSendSocket = socket(family=AF_INET, type=SOCK_DGRAM)
-    UDDPServerSendSocket.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
-    UDDPServerSendSocket.bind((SOCKET_HOST, 8999))
+    send_server = socket.socket(family=socket.AF_INET, type=socket.SOCK_STREAM)
+    send_server.bind((SOCKET_HOST, 9000))
+    send_server.listen(1)
+
+    connection, address = send_server.accept()
 
     while True:
-        bytesAddressPair = UDDPServerSendSocket.recvfrom(BUFFER_SIZE)
-        message = bytesAddressPair[0]
-        address = bytesAddressPair[1]
+        message = recvall(connection, 64)
 
         if message.decode() == '1':
-            UDDPServerSendSocket.sendto(str(train1_image).encode(), address)
+            send_server.send(train1_image.encode(), address)
         elif message.decode() == '2':
-            UDDPServerSendSocket.sendto(str(train2_image).encode(), address)
+            send_server.send(train2_image.encode(), address)
         else:
             print("Invalid train ID")
-
-
-# Start socket listener in a separate thread
-socket_recv_thread = threading.Thread(target=socket_listener, daemon=True)
-socket_send_thread = threading.Thread(target=socket_sender, daemon=True)
-socket_send_thread.start()
-socket_recv_thread.start()
 
 @app.route('/')
 def index():
