@@ -56,7 +56,7 @@ while True:
     stime = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S.%f')
 
     data = json.dumps({
-        "num_train": NUM_TRAIN,
+        "train_id": NUM_TRAIN,
         "image": base64_image,
     })  
 
