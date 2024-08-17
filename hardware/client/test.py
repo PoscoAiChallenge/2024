@@ -69,7 +69,7 @@ while True:
     server.send(data.encode())
     server.send(stime.encode().ljust(64))
 
-    time.sleep(0.3)
+    time.sleep(0.5)
 
     
 
