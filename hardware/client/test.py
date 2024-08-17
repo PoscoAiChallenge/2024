@@ -58,16 +58,20 @@ while True:
 
     print(f"Image length: {image_length}")
     print(f"Time: {stime}")
-    time.sleep(2)
-
-    server.sendall(image_length.encode().ljust(64))
-    server.send(base64_image.encode())
-    server.send(stime.encode().ljust(64))
+    
 
     data = json.dumps({
         "train_id": str(NUM_TRAIN),
         "image": base64_image
     })
+
+    server.sendall(image_length.encode().ljust(64))
+    server.send(data.encode())
+    server.send(stime.encode().ljust(64))
+
+    time.sleep(0.05)
+
+    
 
     #server.send(data.encode())
     #print("sending image")
