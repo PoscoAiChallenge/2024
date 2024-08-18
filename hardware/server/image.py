@@ -67,7 +67,6 @@ def socket_sender():
     send_server.listen(1)
 
     connection, address = send_server.accept()
-    print(f"Connection from {address} has been established")
 
     while True:
         message = recvall(connection, 64)

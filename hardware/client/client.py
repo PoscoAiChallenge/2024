@@ -81,22 +81,25 @@ image_thread.start()
 
 while True:
     res = requests.get(URL + '/speed/' + NUM_TRAIN)
-    number = res.json().get('status')
+    number = str(res.json().get('status'))
 
-    if number == 0:
+    if number == '0':
         motor.off()
         
         if motor_status == 1:
             motor_status = 0
-        else:
             requests.post(URL + '/log', json={'status': 'Motor' + NUM_TRAIN + ' is off'})
-    elif number == 1:
+        else:
+            continue
+            
+    elif number == '1':
         motor.on()
 
         if motor_status == 0:
             motor_status = 1
-        else:
             requests.post(URL + '/log', json={'status': 'Motor' + NUM_TRAIN + ' is on'})
+        else:
+            continue
     else:
         print('Invalid speed value:', number)
         motor.off()
