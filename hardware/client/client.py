@@ -29,6 +29,8 @@ camera = Picamera2()
 camera.configure(camera.create_preview_configuration(main={"format": 'XRGB8888', "size": (400, 400)}))
 camera.start()
 
+time.sleep(3)
+
 def generate_frames():
     prev_frame = None
     motion_threshold = 5000  # Adjustable threshold
