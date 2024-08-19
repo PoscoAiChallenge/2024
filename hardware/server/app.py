@@ -32,7 +32,7 @@ def train(id):
         speed = str(request.form.get('speed'))
         
         if speed is None:
-            speed = request.json.get('speed')
+            speed = str(request.json.get('speed'))
             
         
         if id == '1':
