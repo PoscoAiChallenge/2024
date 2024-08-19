@@ -2,7 +2,6 @@ from flask import Flask, request, jsonify, Response, render_template, redirect
 from socket import *
 import json
 import time
-import base64
 
 # train status
 train1_stat = 0
@@ -18,9 +17,6 @@ log_data = []
 # Create a Flask app
 app = Flask(__name__)
 
-# Socket configuration
-SOCKET_HOST = ""  # Listen on all available interfaces
-
 @app.route('/')
 def index():
     return render_template('index.html', train1=train1_stat, train2=train2_stat)
@@ -32,9 +28,9 @@ def train(id):
         speed = str(request.form.get('speed'))
         
         if speed is None:
+            print('Speed is None')
             speed = str(request.json.get('speed'))
             
-        
         if id == '1':
             train1_stat = speed
         elif id == '2':
