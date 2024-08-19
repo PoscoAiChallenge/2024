@@ -91,7 +91,7 @@ def socket_sender2():
     global train1_image, train2_image
 
     send2_server = socket.socket(family=socket.AF_INET, type=socket.SOCK_STREAM)
-    send2_server.bind((SOCKET_HOST, 8999))
+    send2_server.bind((SOCKET_HOST, 8998))
     send2_server.listen(1)
 
     connection, address = send2_server.accept()
