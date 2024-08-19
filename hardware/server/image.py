@@ -87,15 +87,49 @@ def socket_sender():
         if connection.fileno() == -1:
             connection, address = send_server.accept()
 
+def socket_sender2():
+    global train1_image, train2_image
+
+    send2_server = socket.socket(family=socket.AF_INET, type=socket.SOCK_STREAM)
+    send2_server.bind((SOCKET_HOST, 8999))
+    send2_server.listen(1)
+
+    connection, address = send2_server.accept()
+
+    while True:
+        message = recvall(connection, 64)
+
+        if not message:
+            continue
+
+        if str(message.decode().rstrip()) == '1':
+            train1_image_length = str(len(train1_image)).encode().ljust(64)
+            connection.sendall(train1_image_length)
+            connection.send(train1_image.encode())
+
+        elif str(message.decode().rstrip()) == '2':
+            train2_image_length = str(len(train2_image)).encode().ljust(64)
+            connection.sendall(train2_image_length)
+            connection.send(train2_image.encode())
+        else:
+            print("Invalid train ID")
+
+        if connection.fileno() == -1:
+            connection, address = send2_server.accept()
+
+
 def main():
     receiver_thread = threading.Thread(target=socket_receiver, daemon=True)
     sender_thread = threading.Thread(target=socket_sender, daemon=True)
+    sender2_thread = threading.Thread(target=socket_sender2, daemon=True)
 
     receiver_thread.start()
     sender_thread.start()
+    sender2_thread.start()
 
     receiver_thread.join()
     sender_thread.join()
+    sender2_thread.join()
 
 if __name__ == '__main__':
     main()
