@@ -57,10 +57,13 @@ def motor_control():
             motor_status = 0
             requests.post(URL + '/log', json={'status': 'Invalid speed value: ' + str(number)})
 
+
+
 @app.route('/')
 def video_feed():
     return Response(generate_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 if __name__ == '__main__':
     print('Starting camera server...')
+    threading.Thread(target=motor_control).start()
     app.run(host='0.0.0.0', port=5000)
