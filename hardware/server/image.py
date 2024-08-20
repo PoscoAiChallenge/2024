@@ -161,22 +161,6 @@ def socket_sender2():
 
         if connection.fileno() == -1:
             connection, address = send2_server.accept()
-    
-def socket_start():
-    receiver_thread = threading.Thread(target=socket_receiver1, daemon=True)
-    receiver2_thread = threading.Thread(target=socket_receiver2, daemon=True)
-    sender_thread = threading.Thread(target=socket_sender, daemon=True)
-    sender2_thread = threading.Thread(target=socket_sender2, daemon=True)
-
-    receiver_thread.start()
-    receiver2_thread.start()
-    sender_thread.start()
-    sender2_thread.start()
-
-    receiver_thread.join()
-    receiver2_thread.join()
-    sender_thread.join()
-    sender2_thread.join()
 
 def make_image(base64_image):
     image = base64.b64decode(base64_image)
@@ -206,6 +190,9 @@ def get_train2_image():
         return "No image available"
 
 if __name__ == '__main__':
-    socket_start()
-    app.run(host='0.0.0.0', port=5001)
-    print("Server started")
+    print("Starting socket server...")
+    threading.Thread(target=socket_receiver1, daemon=True).start()
+    threading.Thread(target=socket_receiver2, daemon=True).start()
+    threading.Thread(target=socket_sender, daemon=True).start()
+    threading.Thread(target=socket_sender2, daemon=True).start()
+    app.run(host='0.0.0.0', port=5001, debug=True)
