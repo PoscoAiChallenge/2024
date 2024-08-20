@@ -63,11 +63,11 @@ def socket_receiver1():
 
 def socket_receiver2():
 
-    TCPServerSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    TCPServerSocket.bind((SOCKET_HOST, 9000))
-    TCPServerSocket.listen(1)
+    TCPServerSocket2 = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    TCPServerSocket2.bind((SOCKET_HOST, 9000))
+    TCPServerSocket2.listen(1)
 
-    connection, address = TCPServerSocket.accept()
+    connection, address = TCPServerSocket2.accept()
 
     global train1_image, train2_image
 
