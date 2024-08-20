@@ -208,3 +208,4 @@ def get_train2_image():
 if __name__ == '__main__':
     socket_start()
     app.run(host='0.0.0.0', port=5001)
+    print("Server started")
