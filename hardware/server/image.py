@@ -2,11 +2,15 @@ import socket
 import json
 import requests
 import threading
+import base64
+import flask
 
 SOCKET_HOST = ''
 
 train1_image = ''
 train2_image = ''
+
+app = flask.Flask(__name__)
 
 def recvall(sock, count):
         buf = b''
@@ -17,7 +21,47 @@ def recvall(sock, count):
             count -= len(newbuf)
         return buf
 
-def socket_receiver():
+def socket_receiver1():
+
+    TCPServerSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    TCPServerSocket.bind((SOCKET_HOST, 8999))
+    TCPServerSocket.listen(1)
+
+    connection, address = TCPServerSocket.accept()
+
+    global train1_image, train2_image
+
+    while True:
+        try:
+            length = recvall(connection, 64)
+            length = length.decode()
+            data = recvall(connection, int(length))
+
+            # Decode the received data
+            json_data = json.loads(data.decode())
+                
+            # Extract train ID and base64 encoded image
+            train_id = json_data.get('train_id')
+            base64_image = json_data.get('image')
+
+            if base64_image:
+                    
+                if train_id == '1':
+                    train1_image = base64_image
+
+                elif train_id == '2':
+                    train2_image = base64_image
+                        
+                else:
+                    print(f"Received data for unknown train ID: {train_id}")
+            else:
+                requests.post()
+                print("Received JSON data without image")
+        except:
+            print("Error receiving data")
+            connection.close()
+
+def socket_receiver2():
 
     TCPServerSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     TCPServerSocket.bind((SOCKET_HOST, 9000))
@@ -57,11 +101,12 @@ def socket_receiver():
             print("Error receiving data")
             connection.close()
 
+
 def socket_sender():
     global train1_image, train2_image
 
     send_server = socket.socket(family=socket.AF_INET, type=socket.SOCK_STREAM)
-    send_server.bind((SOCKET_HOST, 8999))
+    send_server.bind((SOCKET_HOST, 8997))
     send_server.listen(1)
 
     connection, address = send_server.accept()
@@ -117,9 +162,32 @@ def socket_sender2():
         if connection.fileno() == -1:
             connection, address = send2_server.accept()
 
+def make_image(base64_image):
+    image = base64.b64decode(base64_image)
+    yield (b'--frame\r\n'
+              b'Content-Type: image/jpeg\r\n\r\n' + image + b'\r\n')
 
+@app.route('/train1', methods=['GET'])
+def get_train1_image():
+    global train1_image
+
+    if train1_image:
+        return flask.Response(make_image(train1_image), mimetype='multipart/x-mixed-replace; boundary=frame')
+    else:
+        return "No image available"
+    
+@app.route('/train2', methods=['GET'])
+def get_train2_image():
+    global train2_image
+
+    if train2_image:
+        return flask.Response(make_image(train2_image), mimetype='multipart/x-mixed-replace; boundary=frame')
+    else:
+        return "No image available"
+    
 def main():
-    receiver_thread = threading.Thread(target=socket_receiver, daemon=True)
+    receiver_thread = threading.Thread(target=socket_receiver1, daemon=True)
+    receiver2_thread = threading.Thread(target=socket_receiver2, daemon=True)
     sender_thread = threading.Thread(target=socket_sender, daemon=True)
     sender2_thread = threading.Thread(target=socket_sender2, daemon=True)
 
@@ -133,3 +201,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+    app.run(host='0.0.0.0', port=5001)
