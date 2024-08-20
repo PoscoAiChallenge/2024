@@ -183,6 +183,10 @@ def make_image(base64_image):
     yield (b'--frame\r\n'
               b'Content-Type: image/jpeg\r\n\r\n' + image + b'\r\n')
 
+@app.route('/')
+def index():
+    return "Server is running"
+
 @app.route('/train1', methods=['GET'])
 def get_train1_image():
     global train1_image
