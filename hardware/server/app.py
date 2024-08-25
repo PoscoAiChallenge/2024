@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, Response, render_template, redirect
+from flask import Flask, request, jsonify, render_template, redirect
 from socket import *
 import json
 import time
@@ -25,8 +25,11 @@ def index():
 def train(id):
     global train1_stat, train2_stat
     if request.method == 'POST':
-        speed = str(request.form.get('speed'))
-        print('Speed:', speed)
+        try:
+            speed = str(request.json.get('speed'))
+        except:
+            speed = str(request.form.get('speed'))
+            
         if speed is None:
             print('Speed is None')
             speed = str(request.json.get('speed'))

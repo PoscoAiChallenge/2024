@@ -70,8 +70,7 @@ def handle_connection(connection):
                     train2_image = base64_image
                 else:
                     print(f"Received data for unknown train ID: {train_id}")
-            else:
-                requests.post()  # 주의: 이 부분의 용도가 명확하지 않습니다. 필요에 따라 수정하세요.
+            else: 
                 print("Received JSON data without image")
         except Exception as e:
             print(f"Error handling connection: {e}")

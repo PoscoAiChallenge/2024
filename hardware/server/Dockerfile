@@ -12,11 +12,14 @@ RUN apt update
 RUN pip install --upgrade pip
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Make port 5000, 8999, 9000 available to the world outside this container
+# Make port 5000 available to the world outside this container
 EXPOSE 5000
+EXPOSE 5001
+EXPOSE 8997
 EXPOSE 8998
 EXPOSE 8999
 EXPOSE 9000
+EXPOSE 9001
 
 # Define environment variable
 ENV FLASK_APP=app.py
