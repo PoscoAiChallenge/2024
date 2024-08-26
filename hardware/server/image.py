@@ -119,50 +119,10 @@ def make_image(base64_image):
 def index():
     return "Server is running"
 
-@app.route('/train1', methods=['GET'])
-def get_train1_image():
-    return '''
-    <html>
-    <head>
-        <title>Train 1 Image</title>
-        <script>
-            function refreshImage() {
-                document.getElementById('train1Image').src = '/train1/image?' + new Date().getTime();
-            }
-            setInterval(refreshImage, 20); // 1초마다 이미지 요청
-        </script>
-    </head>
-    <body>
-        <h1>Train 1 Image</h1>
-        <img id="train1Image" src="/train1/image" />
-    </body>
-    </html>
-    '''
-
 @app.route('/train1/image', methods=['GET'])
 def get_train1_image_data():
     global train1_image
     return flask.Response(make_image(train1_image), mimetype='multipart/x-mixed-replace; boundary=frame') if train1_image else "No image available"
-
-@app.route('/train2', methods=['GET'])
-def get_train2_image():
-    return '''
-    <html>
-    <head>
-        <title>Train 2 Image</title>
-        <script>
-            function refreshImage() {
-                document.getElementById('train2Image').src = '/train2/image?' + new Date().getTime();
-            }
-            setInterval(refreshImage, 20); // 1초마다 이미지 요청
-        </script>
-    </head>
-    <body>
-        <h1>Train 2 Image</h1>
-        <img id="train2Image" src="/train2/image" />
-    </body>
-    </html>
-    '''
 
 @app.route('/train2/image', methods=['GET'])
 def get_train2_image_data():
