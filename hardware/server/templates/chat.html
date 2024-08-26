@@ -5,18 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>열차 모니터링 시스템</title>
     <link rel="stylesheet" href="../static/css/view.css">
+    <link rel="stylesheet" href="../static/css/chat.css">
 </head>
 <body>
-    <div class="sidebar">
+    <div class="sidebar ">
         <h2>ATI</h2>
         <a href="#" onclick="showTrainControl()">열차 제어</a>
         <a href="#" onclick="showTrainMonitoring()">열차 모니터링</a>
         <a href="/chat">챗봇</a>
     </div>
-    <div class="content">
-        <iframe src="https://chat.ye0ngjae.com">
-
-        </iframe>
+    <div class="content iframeContainer iframe16To9">
+        <iframe src="https://chat.ye0ngjae.com"></iframe>
     </div>
     <script>
         function showTrainControl() {
