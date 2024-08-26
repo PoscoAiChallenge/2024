@@ -20,7 +20,20 @@
 
     </div>
     <script>
-        
+        setInterval(() => {
+            fetch('https://api.ye0ngjae.com/log')
+                .then(response => response.json())
+                .then(data => {
+                    data.forEach(element => {
+                        const p = document.createElement('p');
+                        p.innerHTML = element;
+                        document.querySelector('.content').appendChild(p);
+                    });
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+        }, 1000);
     </script>
 </body>
 </html>
