@@ -20,7 +20,7 @@ body {
 .sidebar a {
     color: #fff;
     text-decoration: none;
-    /* display: block; */
+    display: block;
     padding: 10px 0;
 }
 .sidebar a:hover {
