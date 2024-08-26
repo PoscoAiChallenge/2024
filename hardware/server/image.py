@@ -131,7 +131,7 @@ def make_train2_image():
 
 @app.route('/')
 def index():
-    return "Server is running"
+    return flask.render_template('view.html')
 
 @app.route('/train1', methods=['GET'])
 def get_train1_image_data():

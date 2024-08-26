@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>열차 모니터링 시스템</title>
+    <style>
+        body {
+            display: flex;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background-color: #f4f4f4;
+        }
+        .sidebar {
+            width: 200px;
+            background: #333;
+            color: #fff;
+            padding: 20px;
+        }
+        .sidebar h2 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .sidebar a {
+            color: #fff;
+            text-decoration: none;
+            display: block;
+            padding: 10px 0;
+        }
+        .sidebar a:hover {
+            background: #575757;
+        }
+        .content {
+            padding: 20px;
+            flex-grow: 1;
+        }
+        .train-image {
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h2>ATI</h2>
+        <a href="#" onclick="showTrainControl()">열차 제어</a>
+        <a href="#" onclick="showTrainMonitoring()">열차 모니터링</a>
+    </div>
+    <div class="content">
+        <h1>열차 모니터링</h1>
+        <div id="train1" class="train-image">
+            <h2>열차 1 이미지</h2>
+            <img src="/train1" alt="Train 1" />
+        </div>
+        <div id="train2" class="train-image">
+            <h2>열차 2 이미지</h2>
+            <img src="/train2" alt="Train 2" />
+        </div>
+    </div>
+    <script>
+        function showTrainControl() {
+            alert('열차 제어 메뉴는 아직 구현되지 않았습니다.');
+        }
+        function showTrainMonitoring() {
+            // 여기에서 추가 동작을 구현할 수 있습니다.
+        }
+    </script>
+</body>
+</html>
