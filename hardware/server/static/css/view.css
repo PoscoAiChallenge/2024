@@ -1,0 +1,32 @@
+body {
+    display: flex;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background-color: #f4f4f4;
+}
+.sidebar {
+    width: 200px;
+    background: #333;
+    color: #fff;
+    padding: 20px;
+}
+.sidebar h2 {
+    margin: 0;
+    font-size: 24px;
+}
+.sidebar a {
+    color: #fff;
+    text-decoration: none;
+    display: block;
+    padding: 10px 0;
+}
+.sidebar a:hover {
+    background: #575757;
+}
+.content {
+    padding: 20px;
+    flex-grow: 1;
+}
+.train-image {
+    margin: 10px 0;
+}

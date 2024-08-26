@@ -133,6 +133,10 @@ def make_train2_image():
 def index():
     return flask.render_template('view.html')
 
+@app.route('/chat', methods=['GET'])
+def chat():
+    return flask.render_template('chat.html')
+
 @app.route('/train1', methods=['GET'])
 def get_train1_image_data():
     global train1_image
