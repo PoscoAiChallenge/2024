@@ -138,7 +138,7 @@ def control():
     return flask.render_template('train.html')
 
 @app.route('/view')
-def index():
+def view():
     return flask.render_template('view.html')
 
 @app.route('/chat', methods=['GET'])
