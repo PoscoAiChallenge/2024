@@ -112,15 +112,19 @@ def socket_sender(port):
 
 def make_train1_image():
     global train1_image
-    image = base64.b64decode(train1_image)
-    yield (b'--frame\r\n'
-           b'Content-Type: image/jpeg\r\n\r\n' + image + b'\r\n')
+
+    while True:
+        image = base64.b64decode(train1_image)
+        yield (b'--frame\r\n'
+            b'Content-Type: image/jpeg\r\n\r\n' + image + b'\r\n')
     
 def make_train2_image():
     global train2_image
-    image = base64.b64decode(train2_image)
-    yield (b'--frame\r\n'
-           b'Content-Type: image/jpeg\r\n\r\n' + image + b'\r\n')
+    
+    while True:
+        image = base64.b64decode(train2_image)
+        yield (b'--frame\r\n'
+            b'Content-Type: image/jpeg\r\n\r\n' + image + b'\r\n')
 
 @app.route('/')
 def index():
