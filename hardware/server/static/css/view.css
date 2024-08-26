@@ -10,7 +10,7 @@ body {
     background: #333;
     color: #fff;
     padding: 20px;
-    height: max-content;
+    height: max-height;
     box-sizing: border-box;
 }
 .sidebar h2 {
