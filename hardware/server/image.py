@@ -1,8 +1,7 @@
 import socket
 import json
-import requests
 import threading
-import base64
+import pybase64
 import flask
 
 SOCKET_HOST = '0.0.0.0'  # 모든 인터페이스에서 연결 허용
@@ -112,13 +111,13 @@ def socket_sender(port):
             connection.close()
 
 def make_image(base64_image):
-    image = base64.b64decode(base64_image)
+    image = pybase64.b64decode(base64_image)
     yield (b'--frame\r\n'
            b'Content-Type: image/jpeg\r\n\r\n' + image + b'\r\n')
 
 @app.route('/')
 def index():
-    return "Server is running"
+    return flask.render_template('video.html', train1='/train1', train2='/train2')
 
 @app.route('/train1', methods=['GET'])
 def get_train1_image():

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live train cam</title>
+</head>
+<body>
+    <div id="video-container">
+        {% if train1_video %}
+            <img src={{ train1_video }} width="400" height="400">
+        {% else %}
+            <p>No video available</p>
+        {% endif %}
+        {% if train2_video %}
+            <img src={{ train2_video }} width="400" height="400">
+        {% else %}
+            <p>No video available</p>
+        {% endif %}
+    </div>
+</body>
+</html>

@@ -1,6 +1,5 @@
 from flask import Flask, request, jsonify, render_template, redirect
-from socket import *
-import json
+from socket import *     
 import time
 
 # train status
