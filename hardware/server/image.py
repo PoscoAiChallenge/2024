@@ -131,6 +131,14 @@ def make_train2_image():
 
 @app.route('/')
 def index():
+    return flask.render_template('index.html')
+
+@app.route('/control')
+def control():
+    return flask.render_template('train.html')
+
+@app.route('/view')
+def index():
     return flask.render_template('view.html')
 
 @app.route('/chat', methods=['GET'])

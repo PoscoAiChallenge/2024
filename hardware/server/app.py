@@ -18,7 +18,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
-    return render_template('index.html', train1=train1_stat, train2=train2_stat)
+    return "server is running"
 
 @app.route('/speed/<id>', methods=['GET', 'POST'])
 def train(id):
