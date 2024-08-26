@@ -35,11 +35,8 @@ body {
 }
 
 #video {
-    .video {
-        border: none;
-        display: flex; 
-        justify-content: center; 
-        align-items: center; 
-    }
-    
+    border: none;
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
 }
