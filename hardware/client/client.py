@@ -1,6 +1,6 @@
 
 import json
-import base64
+import pybase64
 from dotenv import load_dotenv
 import requests
 import os
@@ -8,9 +8,8 @@ import gpiozero
 from picamera2 import Picamera2
 import cv2
 import threading
-import socket
+import socket  
 import time
-from datetime import datetime
 
 load_dotenv()
 SERVER_IP = os.getenv('SERVER_IP')
@@ -64,7 +63,7 @@ def generate_frames():
 def send_image():
     while True:
         image = generate_frames()
-        base64_image = base64.b64encode(image).decode('utf-8')
+        base64_image = pybase64.b64encode(image).decode('utf-8')
 
         data = json.dumps({
             "train_id": NUM_TRAIN,
