@@ -134,7 +134,7 @@ def get_train1_image_data():
 @app.route('/train2/image', methods=['GET'])
 def get_train2_image_data():
     global train2_image
-    return flask.Response(make_train2_image() mimetype='multipart/x-mixed-replace; boundary=frame') if train2_image else "No image available"
+    return flask.Response(make_train2_image(), mimetype='multipart/x-mixed-replace; boundary=frame') if train2_image else "No image available"
 
 if __name__ == '__main__':
     print("Starting socket server...")
