@@ -33,3 +33,9 @@ body {
 .train-image {
     margin: 10px 0;
 }
+
+.video {
+    width: 50%;
+    height: 50%;
+    border: none;
+}
