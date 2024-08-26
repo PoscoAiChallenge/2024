@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>열차 모니터링 시스템</title>
+    <link rel="stylesheet" href="../static/css/view.css">
+    <link rel="stylesheet" href="../static/css/train.css">
+</head>
+<body>
+    <div class="sidebar">
+        <h2>ATI System</h2>
+        <a href="/control">열차 제어</a>
+        <a href="/view">열차 모니터링</a>
+        <a href="/chat">챗봇</a>
+    </div>
+    <div class="content">
+        <h1>Train Control Pannel</h1>
+        <p id="train1">Train 1 Status</p>
+        <p id="train2">Train 2 Status</p>
+        <form action="http://localhost:5000/speed/1" method="post">
+            <input type="text" name="speed" placeholder="Speed">
+            <input type="submit" value="Train 1">
+        </form>
+        <form action="http://localhost:5000/speed/2" method="post">
+            <input type="text" name="speed" placeholder="Speed">
+            <input type="submit" value="Train 2">
+        </form>
+    </div>
+    <script>
+        fetch('http://localhost:5000/speed/1')
+            .then(response => response.json())
+            .then(data => {
+                if(data == 1){
+                    train1.innerHTML = "Train 1 : 전진";
+                }
+                else if (data == 0){
+                    train1.innerHTML = "Train 1 : 정지";
+                }
+                else{
+                    train1.innerHTML = "Train 1 : 오류";
+                }
+            })
+            .catch(error => {
+                console.error(error);
+            });
+
+        fetch('http://localhost:5000/speed/2')
+            .then(response => response.json())
+            .then(data => {
+                if(data == 1){
+                    train2.innerHTML = "Train 2 : 전진";
+                }
+                else if (data == 0){
+                    train2.innerHTML = "Train 2 : 정지";
+                }
+                else{
+                    train2.innerHTML = "Train 2 : 오류";
+                }
+            })
+            .catch(error => {
+                console.error(error);
+            });
+    </script>
+</body>
+</html>
