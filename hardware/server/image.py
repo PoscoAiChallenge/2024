@@ -2,6 +2,7 @@ import socket
 import json
 import threading
 import base64
+import time
 import flask
 
 SOCKET_HOST = '0.0.0.0'  # 모든 인터페이스에서 연결 허용
@@ -114,14 +115,16 @@ def make_train1_image():
     global train1_image
 
     while True:
+        time.sleep(0.1)
         image = base64.b64decode(train1_image)
         yield (b'--frame\r\n'
             b'Content-Type: image/jpeg\r\n\r\n' + image + b'\r\n')
     
 def make_train2_image():
     global train2_image
-    
+
     while True:
+        time.sleep(0.1)
         image = base64.b64decode(train2_image)
         yield (b'--frame\r\n'
             b'Content-Type: image/jpeg\r\n\r\n' + image + b'\r\n')
