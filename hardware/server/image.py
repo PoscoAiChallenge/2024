@@ -110,8 +110,15 @@ def socket_sender(port):
         finally:
             connection.close()
 
-def make_image(base64_image):
-    image = base64.b64decode(base64_image)
+def make_train1_image():
+    global train1_image
+    image = base64.b64decode(train1_image)
+    yield (b'--frame\r\n'
+           b'Content-Type: image/jpeg\r\n\r\n' + image + b'\r\n')
+    
+def make_train2_image():
+    global train2_image
+    image = base64.b64decode(train2_image)
     yield (b'--frame\r\n'
            b'Content-Type: image/jpeg\r\n\r\n' + image + b'\r\n')
 
@@ -122,12 +129,12 @@ def index():
 @app.route('/train1/image', methods=['GET'])
 def get_train1_image_data():
     global train1_image
-    return flask.Response(make_image(train1_image), mimetype='multipart/x-mixed-replace; boundary=frame') if train1_image else "No image available"
+    return flask.Response(make_train1_image(), mimetype='multipart/x-mixed-replace; boundary=frame') if train1_image else "No image available"
 
 @app.route('/train2/image', methods=['GET'])
 def get_train2_image_data():
     global train2_image
-    return flask.Response(make_image(train2_image), mimetype='multipart/x-mixed-replace; boundary=frame') if train2_image else "No image available"
+    return flask.Response(make_train2_image() mimetype='multipart/x-mixed-replace; boundary=frame') if train2_image else "No image available"
 
 if __name__ == '__main__':
     print("Starting socket server...")
