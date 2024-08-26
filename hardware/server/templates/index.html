@@ -1,21 +1,22 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Train Control Pannel</title>
+    <title>열차 모니터링 시스템</title>
+    <link rel="stylesheet" href="../static/css/view.css">
+    <link rel="stylesheet" href="../static/css/train.css">
 </head>
 <body>
-    <h1>Train Control Pannel</h1>
-    <p>Train 1 Speed: {{ train1 }}</p>
-    <p>Train 2 Speed: {{ train2 }}</p>
-    <form action="/speed/1" method="post">
-        <input type="text" name="speed" placeholder="Speed">
-        <input type="submit" value="Train 1">
-    </form>
-    <form action="/speed/2" method="post">
-        <input type="text" name="speed" placeholder="Speed">
-        <input type="submit" value="Train 2">
-    </form>
+    <div class="sidebar">
+        <h2>ATI System</h2>
+        <a href="/control">열차 제어</a>
+        <a href="/view">열차 모니터링</a>
+        <a href="/chat">챗봇</a>
+        <a href="/log">작동 로그 확인</a>
+    </div>
+    <div class="content">
+
+    </div>
 </body>
 </html>

@@ -13,6 +13,7 @@
         <a href="/control">열차 제어</a>
         <a href="/view">열차 모니터링</a>
         <a href="/chat">챗봇</a>
+        <a href="/log">작동 로그 확인</a>
     </div>
     <div class="content">
         <h1>Train Control Pannel</h1>
@@ -28,39 +29,41 @@
         </form>
     </div>
     <script>
-        fetch('http://localhost:5000/speed/1')
-            .then(response => response.json())
-            .then(data => {
-                if(data == 1){
-                    train1.innerHTML = "Train 1 : 전진";
-                }
-                else if (data == 0){
-                    train1.innerHTML = "Train 1 : 정지";
-                }
-                else{
-                    train1.innerHTML = "Train 1 : 오류";
-                }
-            })
-            .catch(error => {
-                console.error(error);
-            });
+        setInterval(() => {
+            fetch('http://localhost:5000/speed/1')
+                .then(response => response.json())
+                .then(data => {
+                    if(data == 1){
+                        train1.innerHTML = "Train 1 : 전진";
+                    }
+                    else if (data == 0){
+                        train1.innerHTML = "Train 1 : 정지";
+                    }
+                    else{
+                        train1.innerHTML = "Train 1 : 오류";
+                    }
+                })
+                .catch(error => {
+                    console.error(error);
+                });
 
-        fetch('http://localhost:5000/speed/2')
-            .then(response => response.json())
-            .then(data => {
-                if(data == 1){
-                    train2.innerHTML = "Train 2 : 전진";
-                }
-                else if (data == 0){
-                    train2.innerHTML = "Train 2 : 정지";
-                }
-                else{
-                    train2.innerHTML = "Train 2 : 오류";
-                }
-            })
-            .catch(error => {
-                console.error(error);
-            });
+            fetch('http://localhost:5000/speed/2')
+                .then(response => response.json())
+                .then(data => {
+                    if(data == 1){
+                        train2.innerHTML = "Train 2 : 전진";
+                    }
+                    else if (data == 0){
+                        train2.innerHTML = "Train 2 : 정지";
+                    }
+                    else{
+                        train2.innerHTML = "Train 2 : 오류";
+                    }
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+        }, 1000);
     </script>
 </body>
 </html>

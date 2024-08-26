@@ -10,8 +10,8 @@ body {
     background: #333;
     color: #fff;
     padding: 20px;
-    height: 100vh; /* 변경: 사이드바 높이를 100vh로 설정 */
-    box-sizing: border-box; /* 추가: 패딩을 포함한 높이를 설정 */
+    height: max-content;
+    box-sizing: border-box;
 }
 .sidebar h2 {
     margin: 0;
