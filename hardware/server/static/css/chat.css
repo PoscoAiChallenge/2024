@@ -3,7 +3,7 @@
   position: relative;
   width: 100%;
 }
-.iframeContainer iframe {
+iframe {
   position: absolute;
   top: 0;
   left: 0;
