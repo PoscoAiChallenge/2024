@@ -37,10 +37,13 @@ body {
 #video {
     border: none;
     display: flex; 
-    justify-content: center; 
-    align-items: center; 
+    justify-content: center; /* 가로 가운데 정렬 */
+    align-items: center; /* 세로 가운데 정렬 (선택 사항) */
+    width: 100%; /* 필요에 따라 너비 조정 */
 }
 
 .train-image {
-    margin: 0 10px; 
+    margin: 0 10px; /* 자식 요소들 사이에 간격 추가 */
+    display: flex; /* 필요하다면 추가 */
+    justify-content: center; /* 이미지 내부에서 정렬 (선택 사항) */
 }
