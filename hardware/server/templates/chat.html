@@ -17,7 +17,20 @@
         <a href="/log">시스템 로그</a>
     </div>
     <div class="content iframeContainer iframe16To9">
-        <iframe src="https://chat.ye0ngjae.com"></iframe>
+        <iframe src="https://chat.ye0ngjae.com"id="iframe" onload="Height();" frameborder="0" scrolling="no" style="overflow-x:hidden; overflow:auto; width:100%; min-height:500px;"></iframe>
     </div>
+    <script type="text/javascript">
+        function calcHeight() {
+            var the_height =
+                document.getElementById('iframe').contentWindow.
+            document.body.scrollHeight;
+
+            document.getElementById('iframe').height =
+                the_height;
+
+            document.getElementById('iframe').style.overflow = "hidden";
+        }
+    </script>
+출처: https://eunyoe.tistory.com/66 [eunyo의 it이야기:티스토리]
 </body>
 </html>
