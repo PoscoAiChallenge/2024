@@ -133,12 +133,12 @@ def make_train2_image():
 def index():
     return "Server is running"
 
-@app.route('/train1/image', methods=['GET'])
+@app.route('/train1', methods=['GET'])
 def get_train1_image_data():
     global train1_image
     return flask.Response(make_train1_image(), mimetype='multipart/x-mixed-replace; boundary=frame') if train1_image else "No image available"
 
-@app.route('/train2/image', methods=['GET'])
+@app.route('/train2', methods=['GET'])
 def get_train2_image_data():
     global train2_image
     return flask.Response(make_train2_image(), mimetype='multipart/x-mixed-replace; boundary=frame') if train2_image else "No image available"
