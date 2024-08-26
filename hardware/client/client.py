@@ -1,6 +1,6 @@
 
 import json
-import pybase64
+import base64
 from dotenv import load_dotenv
 import requests
 import os
@@ -63,7 +63,7 @@ def generate_frames():
 def send_image():
     while True:
         image = generate_frames()
-        base64_image = pybase64.b64encode(image).decode('utf-8')
+        base64_image = base64.b64encode(image).decode('utf-8')
 
         data = json.dumps({
             "train_id": NUM_TRAIN,
