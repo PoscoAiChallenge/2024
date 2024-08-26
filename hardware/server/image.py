@@ -145,6 +145,11 @@ def view():
 def chat():
     return flask.render_template('chat.html')
 
+@app.route('/log', methods=['GET'])
+def log():
+    return flask.render_template('log.html')
+
+
 @app.route('/train1', methods=['GET'])
 def get_train1_image_data():
     global train1_image
