@@ -3,7 +3,8 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     background-color: #f4f4f4;
-    height: 100vh; /* 추가: body 높이를 100vh로 설정 */
+    height: 100vh; 
+    overflow: hidden;
 }
 .sidebar {
     width: 200px;
