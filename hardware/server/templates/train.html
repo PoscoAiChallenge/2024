@@ -31,7 +31,7 @@
     </div>
     <script>
         setInterval(() => {
-            fetch('http://localhost:5000/speed/1')
+            fetch('https://api.ye0ngjae.com/speed/1')
                 .then(response => response.json())
                 .then(data => {
                     if(data == 1){
@@ -48,7 +48,7 @@
                     console.error(error);
                 });
 
-            fetch('http://localhost:5000/speed/2')
+            fetch('https://api.ye0ngjae.com/speed/2')
                 .then(response => response.json())
                 .then(data => {
                     if(data == 1){
