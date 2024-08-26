@@ -129,7 +129,7 @@ def get_train1_image():
             function refreshImage() {
                 document.getElementById('train1Image').src = '/train1/image?' + new Date().getTime();
             }
-            setInterval(refreshImage, 1000); // 1초마다 이미지 요청
+            setInterval(refreshImage, 100); // 1초마다 이미지 요청
         </script>
     </head>
     <body>
@@ -154,7 +154,7 @@ def get_train2_image():
             function refreshImage() {
                 document.getElementById('train2Image').src = '/train2/image?' + new Date().getTime();
             }
-            setInterval(refreshImage, 1000); // 1초마다 이미지 요청
+            setInterval(refreshImage, 100); // 1초마다 이미지 요청
         </script>
     </head>
     <body>
